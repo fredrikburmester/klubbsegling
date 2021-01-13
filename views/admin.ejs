@@ -1,0 +1,114 @@
+<%- include ('./partials/navbar') %>
+<%- include ('./partials/messages') %>
+
+<div class="container">
+    <h1>Tävlingar</h1>
+    <table class="table">
+        <thead>
+            <tr>
+              <th>Namn</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (var i = 0; i < races.length;  i++ ) { %>
+                <tr>
+                    <th><%= races[i].name %></th>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+    <h1>Klubbar</h1>
+    <table class="table">
+        <thead>
+            <tr>
+              <th>Namn</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (var i = 0; i < clubs.length;  i++ ) { %>
+                <tr>
+                    <th>
+                        <%= clubs[i].name %>
+                        <form action="/admin/removeclub" method="post">
+                            <input type="hidden" name="name" value="<%= clubs[i].name %>">
+                            <input type="submit" value="Ta bort klubb">
+                        </form>
+                    </th>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+    <div>
+        <form action="/admin/addclub" method="POST">
+            <label for="name">Klubb</label>
+            <input type="text" name="name">
+            <button type="submit">Lägg till klubb</button>
+        </form>
+    </div>
+    <div>
+        <form action="/admin/addrace" method="POST">
+            <label for="name">Namn</label>
+            <input type="text" name="name">
+            
+            <label for="startdate">Start datum</label>
+            <input type="date" name="startdate" id="startdate">
+            
+            <label for="enddate">Slut datum</label>
+            <input type="date" name="enddate" id="enddate">
+            
+            <label for="club">Klubb</label>
+            <select name="club" id="club">
+                <option value="1">1</option>
+            </select>
+            
+            <label for="org">Organisatör</label>
+            <input type="text" name="org">
+            
+            <label for="tel">Telefon</label>
+            <input type="tel" name="tel" id="tel">
+            
+            <label for="email">Epost</label>
+            <input type="email" name="email" id="email">
+            
+            <label for="pfd">PFD</label>
+            <input type="file" name="pfd" id="pfd">
+            
+            <label for="image">Bild</label>
+            <input type="file" name="image" id="image">
+            
+            <label for="description">Beskrivning</label>
+            <input type="text" name="description">
+            
+            <label for="check1">RBF tid</label>
+            <input type="checkbox" name="check1" id="check1">
+            
+            <label for="check2">RBF segelnr.</label>
+            <input type="checkbox" name="check2" id="check2">
+            
+            <label for="check3">RBB tid</label>
+            <input type="checkbox" name="check3" id="check3">
+            
+            <label for="check4">RBB segelnr.</label>
+            <input type="checkbox" name="check4" id="check4">
+            
+            <label for="check5">RBF Checkpoint</label>
+            <input type="checkbox" name="check5" id="check5">
+            
+            <label for="handicap">Handikappsystem</label>
+            <select name="handicap" id="handicap">
+                <option value="1">1</option>
+            </select>
+            
+            <label for="regOpen">Registrering öppnar</label>
+            <input type="date" name="regOpen" id="regOpen">
+            
+            <label for="regClose">Registrering stänger</label>
+            <input type="date" name="regClose" id="regClose">
+            
+            <label for="check6">Krav på registrering</label>
+            <input type="checkbox" name="check6" id="check6">
+            
+            <button type="submit">Lägg till tävling</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+<%- include ('./partials/navbar') %>
+
+<div class="container">
+
+    <h1>Profil</h1>
+    <sub><%= user.name %></sub>
+    <h2>Dina båtar</h2>
+    <% for (var i = 0; i < user.boats.length;  i++ ) { %>
+    <form action="/users/removeboat" method="post">
+        <p><%= user.boats[i].name %></p>
+        <input name="remove_name" type="hidden" value="<%= user.boats[i].name %>">
+        <input type="submit" value="Ta bort båt">
+    </form>
+    <% } %>
+
+    <h2>Lägg till båt</h2>
+    <p>Sök efter mätbrev:</p>
+    <form action="/users/addboat" method="post">
+        <label for="ref">Mätbrev</label>
+        <select class="browser-default" name="ref" id="ref">
+            <% for (var i = 0; i < boats.length;  i++ ) { %>
+            <option value="<%= boats[i].Ref %>"><%= boats[i].Ref %></option>
+            <% } %>
+        </select>
+
+        <input type="submit" value="Lägg till båt">
+    </form>
+    <p>Har du inte ett mätbrev än? Lägg till båten manuellt:</p>
+    <form action="/users/addstdboat" method="post">
+        <label for="name">Båtnamn</label>
+        <input type="text" name="name" id="name">
+
+        <label for="type">Båttyp</label>
+        <select name="type" id="type">
+            <% for (var i = 0; i < stdBoats.length;  i++ ) { %>
+            <option value="<%= stdBoats[i].Båttyp %>"><%= stdBoats[i].Båttyp %></option>
+            <% } %>
+        </select>
+
+        <input type="submit" value="Lägg til båt">
+    </form>
+</div>
