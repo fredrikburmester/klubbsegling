@@ -1,0 +1,30 @@
+<div class="container">
+	<img src="/static/img/logo.png" alt="">
+	<h1> Klubbsegling</h1>
+	<p>Välkommen till sveriges coolaste seglingsapp med resultat från klubbseglingar runt om i landet</p>
+
+	<%- include ('./partials/messages') %>
+
+	<form action="/users/login" method="POST">
+		<div class="field">
+			<label class="label" for="email">Epost</label>
+			<div class="control">
+				<input class="input" type="email" name="email" placeholder="Epost" />
+			</div>
+		</div>
+		<div class="field">
+			<label class="label" for="password">Lösenord</label>
+			<div class="control">
+				<input class="input" type="password" name="password" placeholder="Lösenord" />
+			</div>
+			<a href="/forgotpassword">Jag har glömt mitt lösenord.</a>
+		</div>
+		<div class="control">
+			<button class="button is-link"  type="submit" class="btn btn-primary btn-block">Logga in / Registrera dig</button>
+		</div>
+	</form>
+	<div>
+		<p>Eller om du inte vill registrera dig, kolla in information och resultat från klubbarna</p>
+		<a href="/results">Se resultat</a>
+	</div>
+</div>
