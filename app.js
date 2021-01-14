@@ -9,11 +9,13 @@ const passport = require("passport");
 
 //passport config:
 require('./config/passport')(passport)
+
 //mongoose
 mongoose.connect('mongodb://localhost/db_2',{useNewUrlParser: true, useUnifiedTopology : true})
 .then(() => console.log('connected to mongodb'))
 .catch((err)=> console.log(err));
 
+//static files
 app.use('/static', express.static('public'))
 
 //EJS
@@ -37,7 +39,7 @@ app.use((req,res,next)=> {
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error  = req.flash('error');
     next();
-    })
+})
     
 //Routes
 app.use('/',require('./routes/index'));
