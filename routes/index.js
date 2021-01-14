@@ -2,6 +2,7 @@ const express = require('express');
 const router  = express.Router();
 const {ensureAuthenticated} = require('../config/auth') 
 const User = require("../models/user");
+const Race = require("../models/race");
 
 //login page
 router.get('/', (req,res)=>{
@@ -14,9 +15,13 @@ router.get('/register', (req,res)=>{
 })
 
 // Logged in pages
-router.get('/dashboard',ensureAuthenticated,(req,res)=>{
+router.get('/dashboard',ensureAuthenticated, async (req,res)=>{
+
+    const races = await Race.find()
+
     res.render('dashboard',{
         user: req.user,
+        races: races,
     });
 })
 
