@@ -1,7 +1,48 @@
 <%- include ('./partials/navbar') %>
 
 <div class="container">
-    
-    <h1>Hem</h1>
-    <p> Välkommen <%= user.name %></p>
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    Hem
+                </h1>
+                <h2 class="subtitle">
+                    Välkommen <%= user.name %></p>
+                </h2>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <% for (var i = 0; i < races.length;  i++ ) { %>
+        <div class="card">
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-left">
+                        <figure class="image is-48x48">
+                            <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                        </figure>
+                    </div>
+                    <div class="media-content">
+                        <p class="title is-4"><%= races[i].name %></p>
+                        <p class="subtitle is-6"><%= races[i].club %> - <%= races[i].org %></p>
+                    </div>
+                </div>
+
+                <div class="content">
+                    <%= races[i].description %>
+                    <br>
+                    <time datetime="<%= races[i].startDate %>"><%= races[i].startDate %></time>
+                </div>
+                <button class="button is-link">
+                    Registrera
+                </button>
+                <button class="button is-danger">
+                    Avregistrera
+                </button>
+            </div>
+        </div>
+        <% } %>
+    </section>
 </div>
