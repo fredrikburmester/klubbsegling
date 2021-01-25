@@ -3,6 +3,10 @@ const router  = express.Router();
 const {ensureAuthenticated} = require('../config/auth') 
 const User = require("../models/user");
 const Race = require("../models/race");
+const Club = require("../models/club");
+const Serie = require("../models/serie");
+const Handicap = require("../models/handicap");
+const Checkpoint = require("../models/checkpoint");
 
 //login page
 router.get('/', (req,res)=>{
@@ -12,6 +16,17 @@ router.get('/', (req,res)=>{
 //register page
 router.get('/register', (req,res)=>{
     res.render('register');
+})
+
+router.get('/results', async (req,res)=>{
+    const series = await Serie.find()
+    const clubs = await Club.find()
+
+    res.render('results',{
+        user: req.user,
+        clubs: clubs,
+        series: series
+    });
 })
 
 // Logged in pages
