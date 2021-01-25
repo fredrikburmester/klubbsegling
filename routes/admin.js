@@ -3,12 +3,16 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const {ensureAuthenticated} = require('../config/auth') 
+const bodyParser = require("body-parser");
 
 const fileUpload = require('express-fileupload');
 
 router.use(fileUpload({
     createParentPath: true
 }));
+
+router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.json());
 
 const User = require("../models/user");
 const Boat = require("../models/boat");
@@ -88,17 +92,6 @@ router.post('/addserie',ensureAuthenticated, async (req,res)=>{
     }
 })
 
-router.post('/removeserie',ensureAuthenticated, async (req,res)=>{
-    const{
-        name
-    } = req.body
-
-    Serie.deleteOne({name: name})
-    .then(function(){
-        res.redirect('/admin');
-    })
-})
-
 router.post('/addhandicap',ensureAuthenticated, async (req,res)=>{
     const{
         name,
@@ -154,20 +147,15 @@ router.post('/addhandicap',ensureAuthenticated, async (req,res)=>{
     }
 })
 
-router.post('/removehandicap',ensureAuthenticated, async (req,res)=>{
-    const{
-        name
-    } = req.body
-
-    Handicap.deleteOne({name: name})
-    .then(function(){
-        res.redirect('/admin');
-    })
-})
-
 router.post('/addclub',ensureAuthenticated, async (req,res)=>{
     const{
-        name
+        name,
+        shortName,
+        description,
+        website,
+        adress,
+        country,
+        email
     } = req.body
 
     let logo;
@@ -225,7 +213,13 @@ router.post('/addclub',ensureAuthenticated, async (req,res)=>{
             } else {
                 const newClub = new Club({
                     name: name,
-                    logo: filename
+                    logo: filename,
+                    shortName: shortName,
+                    description: description,
+                    website: website,
+                    adress: adress,
+                    country: country,
+                    email: email
                 });
                 
                 newClub.save()
@@ -235,22 +229,111 @@ router.post('/addclub',ensureAuthenticated, async (req,res)=>{
     }
 })
 
-router.post('/removeclub',ensureAuthenticated, async (req,res)=>{
+router.post('/remove/:name(serie|handicap|race|club|checkpoint)?',ensureAuthenticated, async (req,res)=>{
     const{
-        name
+        id
     } = req.body
 
-    Club.deleteOne({name: name})
-    .then(function(){
+    if(req.params.name == 'serie') {
+        Serie.deleteOne({_id: id})
+        .then(function(){
+            res.redirect('/admin');
+        })
+    } else if(req.params.name == 'handicap') {
+        Handicap.deleteOne({_id: id})
+        .then(function(){
+            res.redirect('/admin');
+        })
+    } else if(req.params.name == 'race') {
+        Race.deleteOne({_id: id})
+        .then(function(){
+            res.redirect('/admin');
+        })
+    } else if(req.params.name == 'club') {
+        Club.deleteOne({_id: id})
+        .then(function(){
+            res.redirect('/admin');
+        })
+    } else if(req.params.name == 'checkpoint') {
+        Checkpoint.deleteOne({_id: id})
+        .then(function(){
+            res.redirect('/admin');
+        })
+    }
+    
+})
+
+router.get('/create/race',ensureAuthenticated, async (req,res)=>{
+
+    const races = await Race.find()
+    const clubs = await Club.find()
+    const series = await Serie.find()
+    const handicaps = await Handicap.find()
+
+    res.render('admin',{
+        user: req.user,
+        races: races,
+        clubs: clubs,
+        series: series,
+        handicaps: handicaps
+    });
+})
+
+router.post('/addracefromtemplate',ensureAuthenticated, async (req,res) => {
+    const {
+        name
+    } = req.body;
+
+    if(!name) {
         res.redirect('/admin');
+    }
+
+    const race = await Race.findOne({name: name})
+
+    const races = await Race.find()
+    const clubs = await Club.find()
+    const series = await Serie.find()
+    const handicaps = await Handicap.find()
+
+    const orgs = await User.find({adminLevel: 3})
+
+    res.render('createRace', {
+        user: req.user,
+        races: races,
+        clubs: clubs,
+        series: series,
+        handicaps: handicaps,
+        raceTemplate: race,
+        orgs: orgs,
+        template: true
+    })
+})
+
+router.post('/addnewrace',ensureAuthenticated, async (req,res) => {
+
+    const races = await Race.find()
+    const clubs = await Club.find()
+    const series = await Serie.find()
+    const handicaps = await Handicap.find()
+
+    const orgs = await User.find({adminLevel: 3})
+
+    res.render('createRace', {
+        user: req.user,
+        races: races,
+        clubs: clubs,
+        series: series,
+        handicaps: handicaps,
+        template: false,
+        orgs: orgs
     })
 })
 
 router.post('/addrace',ensureAuthenticated,(req,res)=>{
     const {
         name,
-        startdate,
-        enddate,
+        startDate,
+        endDate,
         club,
         org,
         tel,
@@ -266,10 +349,19 @@ router.post('/addrace',ensureAuthenticated,(req,res)=>{
         check6,
         handicap,
         regOpen,
-        regclose
+        regclose,
+        partRaces,
+        serie
     } = req.body;
 
-    console.log(new Date(startdate))
+    const races =  Race.find()
+    const clubs =  Club.find()
+    const series =  Serie.find()
+    const handicaps =  Handicap.find()
+
+    const orgs =  User.find({adminLevel: 3})
+
+    console.log(new Date(startDate))
 
     let errors = [];
 
@@ -317,8 +409,8 @@ router.post('/addrace',ensureAuthenticated,(req,res)=>{
 
                 const newRace = new Race({
                     name: name,
-                    startDate: new Date(startdate),
-                    endDate: new Date(enddate),
+                    startDate: new Date(startDate),
+                    endDate: new Date(endDate),
                     club: club,
                     org: org,
                     tel: tel,
@@ -333,8 +425,10 @@ router.post('/addrace',ensureAuthenticated,(req,res)=>{
                     rc: c5,
                     reg: c6,
                     handicap: handicap,
-                    regOpen: regOpen,
-                    regclose: regclose
+                    regOpen: new Date(regOpen),
+                    regclose: new Date(regclose),
+                    partRaces: partRaces,
+                    serie: serie
                 });
                 
                 newRace.save()
@@ -343,17 +437,6 @@ router.post('/addrace',ensureAuthenticated,(req,res)=>{
         });
     }
 
-})
-
-router.post('/removerace',ensureAuthenticated, async (req,res)=>{
-    const{
-        name
-    } = req.body
-
-    Race.deleteOne({name: name})
-    .then(function(){
-        res.redirect('/admin');
-    })
 })
 
 module.exports = router;
