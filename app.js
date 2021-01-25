@@ -11,7 +11,7 @@ const passport = require("passport");
 require('./config/passport')(passport)
 
 //mongoose
-mongoose.connect('mongodb://localhost/db_2',{useNewUrlParser: true, useUnifiedTopology : true})
+mongoose.connect('mongodb://192.168.0.118/klubbsegling_1',{useNewUrlParser: true, useUnifiedTopology : true})
 .then(() => console.log('connected to mongodb'))
 .catch((err)=> console.log(err));
 
@@ -45,5 +45,6 @@ app.use((req,res,next)=> {
 app.use('/',require('./routes/index'));
 app.use('/users',require('./routes/users'));
 app.use('/admin',require('./routes/admin'));
+app.use('/json',require('./routes/object'));
 
 app.listen(3000); 
