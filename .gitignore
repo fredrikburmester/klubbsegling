@@ -102,3 +102,11 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Bulma 
+bulma-rtl.css
+bulma-rtl.css.map
+bulma-rtl.min.css
+bulma.css
+bulma.css.map
+bulma.min.css
