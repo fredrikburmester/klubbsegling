@@ -17,33 +17,37 @@ const RaceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    series: {
+    serie: {
         type: String,
+        required: true
+    },
+    partRaces: {
+        type: Object,
         required: true
     },
     org: {
         type: String,
-        required: false
+        required: true
     },
     tel: {
         type: String,
-        required: false
+        required: true
     },
     email: {
         type: String,
-        required: false
+        required: true
     },
     pdf: {
-        type: String,
+        type: Object,
         required: false
     },
     image: {
-        type: String,
+        type: Object,
         required: false
     },
     description: {
         type: String,
-        required: false
+        required: true
     },
     rbft: {
         type: Boolean,
@@ -67,7 +71,7 @@ const RaceSchema = new mongoose.Schema({
     },
     handicap: {
         type: String,
-        required: false
+        required: true
     },
     regOpen: {
         type: Date,
