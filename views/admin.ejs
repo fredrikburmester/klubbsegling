@@ -1,421 +1,415 @@
 <%- include ('./partials/navbar') %>
 <%- include ('./partials/messages') %>
 
-<div class="container">
-    <section class="section">
-        <h1 class="title">Alla Tävlingar</h1>
-        <form action="/admin/removerace" method="POST">
-            <div class="field has-addons">
-                <div class="control is-expanded">
-                    <div class="select is-fullwidth">
-                        <select name="name">
-                            <% for (var i = 0; i < races.length;  i++ ) { %>
-                            <option value="<%= races[i].name %>"><%= races[i].name %> |
-                                <%= races[i].startDate.getDate() + '/' + (races[i].startDate.getMonth()+1) + '/' + races[i].startDate.getFullYear()%>
-                                -
-                                <%= races[i].endDate.getDate() + '/' + (races[i].endDate.getMonth()+1) + '/' + races[i].endDate.getFullYear()%>
-                                |
-                                <%= races[i].club %>
-                            </option>
-                            <% } %>
-                        </select>
-                    </div>
-                </div>
-                <div class="control">
-                    <button type="submit" class="button is-primary">Ta bort</button>
-                </div>
+<div class="container pb-5">
+    <div class="mb-5 mt-5">
+        <h3>Alla tävlingar</h3>
+        <form action="/admin/remove/race" method="POST">
+            <div class="mb-2">
+                <label for="name" class="form-label">Tävlingar</label>
+                <select name="id" class="form-select" aria-label="Default select example">
+                    <% for (var i = 0; i < races.length;  i++ ) { %>
+                    <option value="<%= races[i]._id %>"><%= races[i].name %> |
+                        <%= races[i].startDate.getDate() + '/' + (races[i].startDate.getMonth()+1) + '/' + races[i].startDate.getFullYear()%>
+                        -
+                        <%= races[i].endDate.getDate() + '/' + (races[i].endDate.getMonth()+1) + '/' + races[i].endDate.getFullYear()%>
+                        |
+                        <%= races[i].club %>
+                    </option>
+                    <% } %>
+                </select>
             </div>
+            <button type="button" onclick="getJson('race',this.form)" class="btn btn-primary">Visa mer</button>
+            <button type="submit" class="btn btn-danger">Ta bort</button>
         </form>
-    </section>
+    </div>
 
-    <section class="section">
-        <h1 class="title">Alla Serier</h1>
-        <form action="/admin/removeserie" method="POST">
-            <div class="field has-addons">
-                <div class="control is-expanded">
-                    <div class="select is-fullwidth">
-                        <select name="name">
-                            <% for (var i = 0; i < series.length;  i++ ) { %>
-                            <option value="<%= series[i].name %>"><%= series[i].name %></option>
-                            <% } %>
-                        </select>
-                    </div>
-                </div>
-                <div class="control">
-                    <button type="submit" class="button is-primary">Ta bort</button>
-                </div>
+    <div class="mb-5">
+        <h3>Alla serier</h3>
+        <form action="/admin/remove/serie" method="POST">
+            <div class="mb-2">
+                <label for="name" class="form-label">Serier</label>
+                <select name="id" class="form-select" aria-label="Default select example">
+                    <% for (var i = 0; i < series.length;  i++ ) { %>
+                    <option value="<%= series[i]._id %>"><%= series[i].name %></option>
+                    <% } %>
+                </select>
             </div>
+            <button type="button" onclick="getJson('serie',this.form)" class="btn btn-primary">Visa mer</button>
+            <button type="submit" class="btn btn-danger">Ta bort</button>
         </form>
-    </section>
+    </div>
 
-    <section class="section">
-        <h1 class="title">Alla Handikappsystem</h1>
-        <form action="/admin/removeserie" method="POST">
-            <div class="field has-addons">
-                <div class="control is-expanded">
-                    <div class="select is-fullwidth">
-                        <select name="name">
-                            <% for (var i = 0; i < handicaps.length;  i++ ) { %>
-                            <option value="<%= handicaps[i].name %>"><%= handicaps[i].name %></option>
-                            <% } %>
-                        </select>
-                    </div>
-                </div>
-                <div class="control">
-                    <button type="submit" class="button is-primary">Ta bort</button>
-                </div>
+    <div class="mb-5">
+        <h3>Alla Handikappsystem</h3>
+        <form action="/admin/remove/handicap" method="POST">
+            <div class="mb-2">
+                <label for="name" class="form-label">Handikappsystem</label>
+                <select name="id" class="form-select" aria-label="Default select example">
+                    <% for (var i = 0; i < handicaps.length;  i++ ) { %>
+                    <option value="<%= handicaps[i]._id %>"><%= handicaps[i].name %></option>
+                    <% } %>
+                </select>
             </div>
+            <button type="button" onclick="getJson('handicap',this.form)" class="btn btn-primary">Visa mer</button>
+            <button type="submit" class="btn btn-danger">Ta bort</button>
         </form>
-    </section>
+    </div>
 
-    <section class="section">
-        <h1 class="title">Alla Klubbar</h1>
-        <form action="/admin/removeserie" method="POST">
-            <div class="field has-addons">
-                <div class="control is-expanded">
-                    <div class="select is-fullwidth">
-                        <select name="name">
+    <div class="mb-5">
+        <h3>Alla Klubbar</h3>
+        <form action="/admin/remove/club" method="POST">
+            <div class="mb-2">
+                <label for="name" class="form-label">Klubbar</label>
+                <select name="id" class="form-select" aria-label="Default select example">
+                    <% for (var i = 0; i < clubs.length;  i++ ) { %>
+                    <option value="<%= clubs[i]._id %>"><%= clubs[i].name %></option>
+                    <% } %>
+                </select>
+            </div>
+            <button type="button" onclick="getJson('club',this.form)" class="btn btn-primary">Visa mer</button>
+            <button type="submit" class="btn btn-danger">Ta bort</button>
+        </form>
+    </div>
+
+    <h1 class="pb-2">Lägg till tävling</h1>
+    <button class="btn btn-primary mb-4 mr-4" type="button" data-bs-toggle="collapse" data-bs-target="#addrace"
+        aria-expanded="false" aria-controls="collapseExample">
+        Se mer
+    </button>
+    <div class="collapse" id="addrace">
+        <div class="mb-4">
+            <form action="/admin/addracefromtemplate" method="POST">
+                <div class="mb-2">
+                    <label for="name" class="form-label">Välj bland tidigare tävlingar</label>
+                    <select name="name" class="form-select" aria-label="Default select example" required>
+                        <% for (var i = 0; i < races.length;  i++ ) { %>
+                        <option value="<%= races[i].name %>"><%= races[i].name %> |
+                            <%= races[i].startDate.getDate() + '/' + (races[i].startDate.getMonth()+1) + '/' + races[i].startDate.getFullYear()%>
+                            -
+                            <%= races[i].endDate.getDate() + '/' + (races[i].endDate.getMonth()+1) + '/' + races[i].endDate.getFullYear()%>
+                            |
+                            <%= races[i].club %>
+                        </option>
+                        <% } %>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-disabled" disabled>Använd denna tävling som
+                    mall</button>
+            </form>
+        </div>
+        <div class="mb-5">
+            <form action="/admin/addnewrace" method="POST">
+                <p for="">Skapa en ny tävling</p>
+                <input type="hidden">
+                <button type="submit" class="btn btn-primary">Skapa ny</button>
+            </form>
+        </div>
+    </div>
+    <br>
+
+    <h1 class="pb-2">Lägg till serie</h1>
+    <button class="btn btn-primary mb-4 mr-4" type="button" data-bs-toggle="collapse" data-bs-target="#addserie"
+        aria-expanded="false" aria-controls="collapseExample">
+        Se mer
+    </button>
+    <div class="collapse" id="addserie">
+        <div class="mb-5">
+            <form method="POST" action="/admin/addserie">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Namn på serien</label>
+                    <input type="name" name="name" class="form-control" aria-describedby="emailHelp" required>
+                    <div class="form-text">Seriens namn</div>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Beskrivning</label>
+                    <textarea class="form-control" name="description" rows="3"></textarea required>
+                </div>
+                <button type="submit" class="btn btn-success">Lägg till</button>
+            </form>
+        </div>
+    </div>
+    <br>
+
+    <h1 class="pb-2">Lägg till handikapp</h1>
+    <button class="btn btn-primary mb-4 mr-4" type="button" data-bs-toggle="collapse" data-bs-target="#addhandicap" aria-expanded="false" aria-controls="collapseExample">
+        Se mer
+    </button>
+    <div class="collapse" id="addhandicap">
+        <div class="mb-5">
+            <form action="/admin/addhandicap" method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Namn på handikappsystemet</label>
+                    <input type="name" name="name" class="form-control" aria-describedby="emailHelp" required>
+                    <div class="form-text">Namn</div>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Beskrivning</label>
+                    <textarea class="form-control" name="description" rows="3"></textarea required>
+                </div>
+                <button type="submit" class="btn btn-success">Lägg till</button>
+            </form>
+        </div>
+    </div>
+    <br>
+
+    <h1 class="pb-2">Lägg till klubb</h1>
+    <button class="btn btn-primary mb-4 mr-4" type="button" data-bs-toggle="collapse" data-bs-target="#addclub" aria-expanded="false" aria-controls="collapseExample">
+        Se mer
+    </button>
+    <div class="collapse" id="addclub">
+        <div class="mb-5">
+            <form action="/admin/addclub" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Namn på klubben</label>
+                    <input type="name" name="name" class="form-control" aria-describedby="emailHelp" required>
+                    <div class="form-text">Klubbens namn, t.ex. Trälhavets Båtklubb</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="shortName" class="form-label">Klubbens förkortning</label>
+                    <input type="name" name="shortName" class="form-control" aria-describedby="emailHelp" required>
+                    <div class="form-text">Klubbens förkortning, t.ex. TäBK</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Beskrivning</label>
+                    <textarea class="form-control" name="description" rows="3"></textarea required>
+                </div>
+
+                <label for="basic-url" class="form-label">Hemsida</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon3">https://</span>
+                    <input type="text" for="website" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Adress</label>
+                    <textarea name="adress" class="form-control" name="description" rows="3"></textarea>
+                    <div class="form-text">T.ex. Generalsvägen 118A, 18452 Österskär</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Land</label>
+                    <input type="text" name="country" class="form-control" name="description" rows="3"></input>
+                    <div class="form-text">T.ex. Sverige</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Epost</label>
+                    <input name="email" type="email" class="form-control" aria-describedby="emailHelp">
+                    <div class="form-text">Epost till klubben (eller ansvarig)</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Klubbens logga</label>
+                    <input name="logo" class="form-control" type="file" id="formFile">
+                    <div class="form-text">Gärna en kvadratisk bild i PNG format</div>
+                </div>
+
+                <button type="submit" class="btn btn-success">Lägg till</button>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function getJson(name, form) {
+            window.location.href = '/json/' + name + '/' + form.id.value;
+        }
+    </script>
+
+    <!-- 
+<section class="section">
+    <h1 class="title">Lägg till tävling</h1>
+    <div class="pb-6">
+        <form action="/admin/addrace" method="POST">
+
+            <div class="field">
+                <label class="label">Namn</label>
+                <div class="control">
+                    <input class="input" type="text" placeholder="Tävlingsnamn" name="name">
+                </div>
+                <p class="help">Tävlingens namn</p>
+            </div>
+
+            <div class="field">
+                <label class="label">Startdatum</label>
+                <div class="control">
+                    <input class="input" type="date" placeholder="" name="startdate" required>
+                </div>
+                <p class="help">Datumet tävlingen startar</p>
+            </div>
+
+            <div class="field">
+                <label class="label">Slutdatum</label>
+                <div class="control">
+                    <input class="input" type="date" placeholder="" name="enddate" required>
+                </div>
+                <p class="help">Datumet tävlingen slutar</p>
+            </div>
+
+            <div class="field">
+                <label class="label">Klubb</label>
+                <div class="control">
+                    <div class="select">
+                        <select name="club">
+                            <option value=""></option>
                             <% for (var i = 0; i < clubs.length;  i++ ) { %>
                             <option value="<%= clubs[i].name %>"><%= clubs[i].name %></option>
                             <% } %>
                         </select>
                     </div>
                 </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Organisatör</label>
                 <div class="control">
-                    <button type="submit" class="button is-primary">Ta bort</button>
+                    <input class="input" type="text" placeholder="Organisatör" name="org" value="<%= user.name%>">
+                </div>
+                <p class="help">Personen / Företaget som organiserar eventet</p>
+            </div>
+
+            <div class="field">
+                <label class="label">Telefon</label>
+                <div class="control">
+                    <input class="input" type="tel" placeholder="Telefon" name="tel">
+                </div>
+                <p class="help">Telefon till organisatören</p>
+            </div>
+
+            <div class="field">
+                <label class="label">Epost</label>
+                <div class="control">
+                    <input class="input" type="email" placeholder="Epost" name="email" value="<%= user.email%>">
+                </div>
+                <p class="help">Epost till organisatören</p>
+            </div>
+
+            <div class="file pb-2">
+                <label class="file-label">
+                    <input class="file-input" type="file" name="pdf">
+                    <span class="file-cta">
+                        <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label">
+                            Ladda upp PDF fil...
+                        </span>
+                    </span>
+                </label>
+            </div>
+
+            <div class="file">
+                <label class="file-label">
+                    <input class="file-input" type="file" name="image">
+                    <span class="file-cta">
+                        <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label">
+                            Ladda upp bild...
+                        </span>
+                    </span>
+                </label>
+            </div>
+
+            <div class="field">
+                <label class="label">Beskrivning</label>
+                <div class="control">
+                    <textarea class="textarea" placeholder="Beskrivning" name="description"></textarea>
                 </div>
             </div>
+
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" name="check1">
+                        Rapportera båt framför - tid
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" name="check2">
+                        Rapportera båt framför - segelnr.
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" name="check3">
+                        Rapportera båt bakom - tid
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" name="check4">
+                        Rapportera båt bakom - segelnr.
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" name="check5">
+                        Rapportera checkpoint.
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Handikappsystem</label>
+                <div class="control">
+                    <div class="select">
+                        <select name="handicap" default>
+                            <option value=""></option>
+                            <% for (var i = 0; i < handicaps.length;  i++ ) { %>
+                            <option value="<%= handicaps[i].name %>"><%= handicaps[i].name %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Registrering öppnar</label>
+                <div class="control">
+                    <input class="input" type="date" placeholder="" name="regOpen">
+                </div>
+                <p class="help">Datumet registrering öppnar</p>
+            </div>
+
+            <div class="field">
+                <label class="label">Registrering stänger</label>
+                <div class="control">
+                    <input class="input" type="date" placeholder="" name="regClose">
+                </div>
+                <p class="help">Datumet registrering stänger</p>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" name="check6">
+                        Krav på registrering
+                    </label>
+                </div>
+            </div>
+
+            <div class="control">
+                <button class="button is-primary">Lägg till</button>
+            </div>
         </form>
-    </section>
-
-    <section class="section">
-        <h1 class="title pt-6">Lägg till serie</h1>
-        <div class="pb-6">
-            <form action="/admin/addserie" method="POST" enctype="multipart/form-data">
-                <div class="field">
-                    <label class="label">Serie</label>
-                    <div class="control">
-                        <input class="input" type="text" placeholder="Klubbnamn" name="name" id="name">
-                    </div>
-                    <p class="help">Seriens namn</p>
-                </div>
-                <div class="field">
-                    <label class="label">Beskrivning</label>
-                    <div class="control">
-                        <textarea class="textarea" placeholder="Beskrivning" name="description"></textarea>
-                    </div>
-                    <p class="help">Beskrivning</p>
-                </div>
-                <div class="control">
-                    <button class="button is-primary">Lägg till</button>
-                </div>
-            </form>
-        </div>
-    </section>
-
-    <section class="section">
-        <h1 class="title pt-6">Lägg till handikappsystem</h1>
-        <div class="pb-6">
-            <form action="/admin/addhandicap" method="POST" enctype="multipart/form-data">
-                <div class="field">
-                    <label class="label">Handikappsystem</label>
-                    <div class="control">
-                        <input class="input" type="text" placeholder="Klubbnamn" name="name" id="name">
-                    </div>
-                    <p class="help">Namn</p>
-                </div>
-                <div class="field">
-                    <label class="label">Beskrivning</label>
-                    <div class="control">
-                        <textarea class="textarea" placeholder="Beskrivning" name="description"></textarea>
-                    </div>
-                    <p class="help">Beskrivning</p>
-                </div>
-                <div class="control">
-                    <button class="button is-primary">Lägg till</button>
-                </div>
-            </form>
-        </div>
-    </section>
-
-    <section class="section">
-        <h1 class="title pt-6">Lägg till klubb</h1>
-        <div class="pb-6">
-            <form action="/admin/addclub" method="POST" enctype="multipart/form-data">
-                <div class="field">
-                    <label class="label">Klubb</label>
-                    <div class="control">
-                        <input class="input" type="text" placeholder="Klubbnamn" name="name" id="name">
-                    </div>
-                    <p class="help">Klubbens namn, t.ex. TBK</p>
-                </div>
-
-                <div class="field">
-                    <label class="label">Adress</label>
-                    <div class="control">
-                        <input class="input" type="text" placeholder="Klubbnamn" name="adress">
-                    </div>
-                    <p class="help">Klubbens gatuadress</p>
-                </div>
-
-                <div class="field">
-                    <label class="label">Postnummer</label>
-                    <div class="control">
-                        <input class="input" type="text" placeholder="Klubbnamn" name="postnr">
-                    </div>
-                    <p class="help">Klubbens postnummer</p>
-                </div>
-
-                <div class="field">
-                    <label class="label">Postort</label>
-                    <div class="control">
-                        <input class="input" type="text" placeholder="Klubbnamn" name="county">
-                    </div>
-                    <p class="help">Klubbens postort</p>
-                </div>
-
-                <div class="field">
-                    <label class="label">Land</label>
-                    <div class="control">
-                        <input class="input" type="text" placeholder="Klubbnamn" name="country">
-                    </div>
-                    <p class="help"></p>
-                </div>
-
-                <div class="field">
-                    <label class="label">Epost</label>
-                    <div class="control">
-                        <input class="input" type="text" placeholder="Klubbnamn" name="email">
-                    </div>
-                    <p class="help"></p>
-                </div>
-
-                <div class="field">
-                    <label class="label">Hemsida</label>
-                    <div class="control">
-                        <input class="input" type="text" placeholder="https://hemsida.se" name="website">
-                    </div>
-                    <p class="help">Klubbens hemsida med https:// framför</p>
-                </div>
-
-                <div class="field">
-                    <label class="label">Beskrivning</label>
-                    <div class="control">
-                        <textarea class="textarea" placeholder="Beskrivning" name="description"></textarea>
-                    </div>
-                </div>
-
-                <div class="file pb-2">
-                    <label class="file-label">
-                        <input class="file-input" type="file" name="logo">
-                        <span class="file-cta">
-                            <span class="file-icon">
-                                <i class="fas fa-upload"></i>
-                            </span>
-                            <span class="file-label">
-                                Ladda upp klubbens logga...
-                            </span>
-                        </span>
-                    </label>
-                </div>
-
-                <div class="control">
-                    <button class="button is-primary">Lägg till</button>
-                </div>
-            </form>
-        </div>
-    </section>
-
-    <section class="section">
-        <h1 class="title">Lägg till tävling</h1>
-        <div class="pb-6">
-            <form action="/admin/addrace" method="POST">
-
-                <div class="field">
-                    <label class="label">Namn</label>
-                    <div class="control">
-                        <input class="input" type="text" placeholder="Tävlingsnamn" name="name">
-                    </div>
-                    <p class="help">Tävlingens namn</p>
-                </div>
-
-                <div class="field">
-                    <label class="label">Startdatum</label>
-                    <div class="control">
-                        <input class="input" type="date" placeholder="" name="startdate" required>
-                    </div>
-                    <p class="help">Datumet tävlingen startar</p>
-                </div>
-
-                <div class="field">
-                    <label class="label">Slutdatum</label>
-                    <div class="control">
-                        <input class="input" type="date" placeholder="" name="enddate" required>
-                    </div>
-                    <p class="help">Datumet tävlingen slutar</p>
-                </div>
-
-                <div class="field">
-                    <label class="label">Klubb</label>
-                    <div class="control">
-                        <div class="select">
-                            <select name="club">
-                                <option value=""></option>
-                                <% for (var i = 0; i < clubs.length;  i++ ) { %>
-                                <option value="<%= clubs[i].name %>"><%= clubs[i].name %></option>
-                                <% } %>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="label">Organisatör</label>
-                    <div class="control">
-                        <input class="input" type="text" placeholder="Organisatör" name="org" value="<%= user.name%>">
-                    </div>
-                    <p class="help">Personen / Företaget som organiserar eventet</p>
-                </div>
-
-                <div class="field">
-                    <label class="label">Telefon</label>
-                    <div class="control">
-                        <input class="input" type="tel" placeholder="Telefon" name="tel">
-                    </div>
-                    <p class="help">Telefon till organisatören</p>
-                </div>
-
-                <div class="field">
-                    <label class="label">Epost</label>
-                    <div class="control">
-                        <input class="input" type="email" placeholder="Epost" name="email" value="<%= user.email%>">
-                    </div>
-                    <p class="help">Epost till organisatören</p>
-                </div>
-
-                <div class="file pb-2">
-                    <label class="file-label">
-                        <input class="file-input" type="file" name="pdf">
-                        <span class="file-cta">
-                            <span class="file-icon">
-                                <i class="fas fa-upload"></i>
-                            </span>
-                            <span class="file-label">
-                                Ladda upp PDF fil...
-                            </span>
-                        </span>
-                    </label>
-                </div>
-
-                <div class="file">
-                    <label class="file-label">
-                        <input class="file-input" type="file" name="image">
-                        <span class="file-cta">
-                            <span class="file-icon">
-                                <i class="fas fa-upload"></i>
-                            </span>
-                            <span class="file-label">
-                                Ladda upp bild...
-                            </span>
-                        </span>
-                    </label>
-                </div>
-
-                <div class="field">
-                    <label class="label">Beskrivning</label>
-                    <div class="control">
-                        <textarea class="textarea" placeholder="Beskrivning" name="description"></textarea>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <div class="control">
-                        <label class="checkbox">
-                            <input type="checkbox" name="check1">
-                            Rapportera båt framför - tid
-                        </label>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <div class="control">
-                        <label class="checkbox">
-                            <input type="checkbox" name="check2">
-                            Rapportera båt framför - segelnr.
-                        </label>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <div class="control">
-                        <label class="checkbox">
-                            <input type="checkbox" name="check3">
-                            Rapportera båt bakom - tid
-                        </label>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <div class="control">
-                        <label class="checkbox">
-                            <input type="checkbox" name="check4">
-                            Rapportera båt bakom - segelnr.
-                        </label>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <div class="control">
-                        <label class="checkbox">
-                            <input type="checkbox" name="check5">
-                            Rapportera checkpoint.
-                        </label>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="label">Handikappsystem</label>
-                    <div class="control">
-                        <div class="select">
-                            <select name="handicap" default>
-                                <option value=""></option>
-                                <% for (var i = 0; i < handicaps.length;  i++ ) { %>
-                                <option value="<%= handicaps[i].name %>"><%= handicaps[i].name %></option>
-                                <% } %>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="label">Registrering öppnar</label>
-                    <div class="control">
-                        <input class="input" type="date" placeholder="" name="regOpen">
-                    </div>
-                    <p class="help">Datumet registrering öppnar</p>
-                </div>
-
-                <div class="field">
-                    <label class="label">Registrering stänger</label>
-                    <div class="control">
-                        <input class="input" type="date" placeholder="" name="regClose">
-                    </div>
-                    <p class="help">Datumet registrering stänger</p>
-                </div>
-
-                <div class="field">
-                    <div class="control">
-                        <label class="checkbox">
-                            <input type="checkbox" name="check6">
-                            Krav på registrering
-                        </label>
-                    </div>
-                </div>
-
-                <div class="control">
-                    <button class="button is-primary">Lägg till</button>
-                </div>
-            </form>
-        </div>
-    </section>
-</div>
+    </div>
+</section>
+</div> -->
