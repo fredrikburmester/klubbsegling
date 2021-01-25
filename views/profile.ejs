@@ -1,42 +1,99 @@
 <%- include ('./partials/navbar') %>
 
-<div class="container">
+<style>
+    .profile {
+        display: grid !important;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        justify-items: center;
+    }
+    #about {
+        display: grid !important;
+        justify-items: center;
+    }
+</style>
 
-    <h1>Profil</h1>
-    <sub><%= user.name %></sub>
-    <h2>Dina båtar</h2>
-    <% for (var i = 0; i < user.boats.length;  i++ ) { %>
-    <form action="/users/removeboat" method="post">
-        <p><%= user.boats[i].name %></p>
-        <input name="remove_name" type="hidden" value="<%= user.boats[i].name %>">
-        <input type="submit" value="Ta bort båt">
-    </form>
-    <% } %>
+<div class="profile container my-5 ">
 
-    <h2>Lägg till båt</h2>
-    <p>Sök efter mätbrev:</p>
-    <form action="/users/addboat" method="post">
-        <label for="ref">Mätbrev</label>
-        <select class="browser-default" name="ref" id="ref">
-            <% for (var i = 0; i < boats.length;  i++ ) { %>
-            <option value="<%= boats[i].Ref %>"><%= boats[i].Ref %></option>
-            <% } %>
-        </select>
+    <div class="" id="about">
+        <img class="rounded-circle" src="/static/img/logo.png" alt="" width="100px" height="100px">
+        <p><%= user.name %></p>
+    </div>
 
-        <input type="submit" value="Lägg till båt">
-    </form>
-    <p>Har du inte ett mätbrev än? Lägg till båten manuellt:</p>
-    <form action="/users/addstdboat" method="post">
-        <label for="name">Båtnamn</label>
-        <input type="text" name="name" id="name">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Hem</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Båtar</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Lägg till båt</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div class="my-5">
+                About
+            </div>
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="my-5" id="boats">
+                <h2>Dina båtar</h2>
+        
+                <% for (var i = 0; i < user.boats.length;  i++ ) { %>
+                <form action="/users/removeboat" method="post">
+                    <p><%= user.boats[i].name %></p>
+                    <input name="remove_name" type="hidden" value="<%= user.boats[i]._id %>">
+                    <input type="submit" value="Ta bort båt">
+                </form>
+                <button onclick="removeBoat('<%= user.boats[i].name %>')">Ta bort med AJAX</button>
+                <% } %>
 
-        <label for="type">Båttyp</label>
-        <select name="type" id="type">
-            <% for (var i = 0; i < stdBoats.length;  i++ ) { %>
-            <option value="<%= stdBoats[i].Båttyp %>"><%= stdBoats[i].Båttyp %></option>
-            <% } %>
-        </select>
+                
+            </div>
+        </div>
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            <div class="my-5" id="add-boat">
+                <h2>Lägg till båt</h2>
+                <p>Sök efter mätbrev:</p>
+                <form action="/users/addboat" method="post">
+                    <label for="ref">Mätbrev</label>
+                    <select class="browser-default" name="ref" id="ref">
+                        <% for (var i = 0; i < boats.length;  i++ ) { %>
+                        <option value="<%= boats[i].Ref %>"><%= boats[i].Ref %></option>
+                        <% } %>
+                    </select>
+        
+                    <input type="submit" value="Lägg till båt">
+                </form>
+                <p>Har du inte ett mätbrev än? Lägg till båten manuellt:</p>
+                <form action="/users/addstdboat" method="post">
+                    <label for="name">Båtnamn</label>
+                    <input type="text" name="name" id="name">
+        
+                    <label for="type">Båttyp</label>
+                    <select name="type" id="type">
+                        <% for (var i = 0; i < stdBoats.length;  i++ ) { %>
+                        <option value="<%= stdBoats[i].Båttyp %>"><%= stdBoats[i].Båttyp %></option>
+                        <% } %>
+                    </select>
+        
+                    <input type="submit" value="Lägg til båt">
+                </form>
+            </div>
+        </div>
+      </div>
+      
+    
 
-        <input type="submit" value="Lägg til båt">
-    </form>
+    
 </div>
+
+<script>
+    function removeBoat(name) {
+        fetch('/json/handicap/600477498fb295647d2a05a3')
+        .then(response => response.json())
+        .then(data => console.log(data));
+    }
+</script>
