@@ -5,21 +5,17 @@ const ClubSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    shortName: {
+        type: String,
+        required: true,
+    },
     adress: {
         type: String,
-        required: false
-    },
-    zipcode: {
-        type: String,
-        required: false
-    },
-    county: {
-        type: String,
-        required: false
+        required: true
     },
     country: {
         type: String,
-        required: false
+        required: true
     },
     email: {
         type: String,
@@ -31,11 +27,11 @@ const ClubSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: false
+        required: true
     },
     logo: {
         type: String,
-        required: false
+        required: true
     },
     contact: {
         type: String,
