@@ -79,7 +79,7 @@
     </button>
     <div class="collapse" id="addrace">
         <div class="mb-4">
-            <form action="/admin/addracefromtemplate" method="POST">
+            <form action="/admin/create/race/template" method="GET">
                 <div class="mb-2">
                     <label for="name" class="form-label">Välj bland tidigare tävlingar</label>
                     <select name="name" class="form-select" aria-label="Default select example" required>
@@ -99,7 +99,7 @@
             </form>
         </div>
         <div class="mb-5">
-            <form action="/admin/addnewrace" method="POST">
+            <form action="/admin/create/race/new" method="POST">
                 <p for="">Skapa en ny tävling</p>
                 <input type="hidden">
                 <button type="submit" class="btn btn-primary">Skapa ny</button>
@@ -159,7 +159,7 @@
     </button>
     <div class="collapse" id="addclub">
         <div class="mb-5">
-            <form action="/admin/addclub" method="POST" enctype="multipart/form-data">
+            <form action="/admin/add/club" method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="name" class="form-label">Namn på klubben</label>
                     <input type="name" name="name" class="form-control" aria-describedby="emailHelp" required>
@@ -191,7 +191,7 @@
 
                 <div class="mb-3">
                     <label for="description" class="form-label">Land</label>
-                    <input type="text" name="country" class="form-control" name="description" rows="3"></input>
+                    <input type="text" name="country" class="form-control" name="description" rows="3">
                     <div class="form-text">T.ex. Sverige</div>
                 </div>
 
@@ -211,7 +211,12 @@
 
             </form>
         </div>
+       
     </div>
+
+    <% for(var e in errors) { %>
+        <p><%= e %></p>
+    <% } %>
 
     <script>
         function getJson(name, form) {
