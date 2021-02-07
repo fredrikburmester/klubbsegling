@@ -16,6 +16,10 @@ const CheckpointSchema = new mongoose.Schema({
     image: {
         type: String,
         required: false
+    },
+    race: {
+        type: Object,
+        required: false
     }
 });
 
