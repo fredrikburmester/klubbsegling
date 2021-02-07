@@ -212,7 +212,7 @@
         </div>
 
         <div class="hidden-form-element form-step form-check step4 mb-4">
-            <input class="form-check-input" type="checkbox" checked="true" value="checked" id="check6" name="check6">
+            <input class="form-check-input" type="checkbox" checked="true" value="" id="check6" name="check6">
             <label class="form-check-label" for="check6">
                 Krav på registrering
             </label>
@@ -240,7 +240,7 @@
 
         <div class="hidden-form-element form-step mb-3 step5">
             <label for="partraces" class="form-label">Delseglingar</label>
-            <input type="number" name="partraces" class="form-control" placeholder="1" id="partraces">
+            <input type="number" name="partraces" class="form-control" value="1" id="partraces">
             <div class="form-text">Antal delseglingar totalt</div>
             
             <div class="my-4">
@@ -258,7 +258,19 @@
         </div>
     </form>
 
-    
+    <div id="success" class="hidden-form-element">
+        <h3>Tävling skapad</h3>
+        <div id="info"></div>
+        <button type="button" class="btn btn-success" onclick="window.location('/admin')">Admin panel</button>
+        <button type="button" class="btn btn-success" onclick="goToStep(1)">Skapa en till</button>
+    </div>
+
+    <div id="error" class="hidden-form-element">
+        <h3 style="color: red">Någonting gick fel</h3>
+        <div id="info"></div>
+        <button type="button" class="btn btn-success" onclick="window.location('/admin')">Admin panel</button>
+        <button type="button" class="btn btn-success" onclick="goToStep(1)">Försök igen</button>
+    </div>
 
     <% } %>
 
@@ -316,12 +328,17 @@ function goToStep(step) {
 
     if (activeStep == 1) {
         document.getElementById('previous-button').classList.add('disabled')
+        document.getElementById('next-button').classList.remove('disabled')
     } else if (activeStep == totalSteps) {
         document.getElementById('next-button').classList.add('disabled')
+        document.getElementById('previous-button').classList.remove('disabled')
     } else {
         document.getElementById('previous-button').classList.remove('disabled')
         document.getElementById('next-button').classList.remove('disabled')
     }
+
+    success.classList.add("hidden-form-element")
+    error.classList.add("hidden-form-element")
 }
 
 function previousStep() {
@@ -375,12 +392,10 @@ function createRaceObject(form) {
         var Race = new FormData()
 
         Array.from(form.pdf.files).forEach(file => {
-            console.log(file)
             Race.append('pdf', file)
         })
 
         Array.from(form.images.files).forEach(file => {
-            console.log(file)
             Race.append('images', file)
         })
         
@@ -404,15 +419,24 @@ function createRaceObject(form) {
         Race.append('partRaces', partRacesArray)
         Race.append('serie', form.serie.value)
 
-        console.log(Race)
-
         axios.post('/admin/add/race', Race, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
         }).then(response => { 
-            // window.location.href = "/admin";
-            console.log(response)
+            var data = response.data.response
+            if(data.success == true) {
+                var p = document.createElement("p")
+                p.innerHTML = data.data.name
+                info.appendChild(p)
+                success.classList.remove("hidden-form-element")
+                // window.location = "/json/race/" + response.data.response.id;  
+            } else {
+                var p = document.createElement("p")
+                p.innerHTML = data.error
+                info.appendChild(p)
+                error.classList.remove("hidden-form-element")
+            }
         }).catch(error => console.error(error));
     }
 }
