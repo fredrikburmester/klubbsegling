@@ -21,7 +21,7 @@ const RaceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    partRaces: {
+    partRaces: { // checkpoints within
         type: Object,
         required: true
     },
@@ -49,23 +49,11 @@ const RaceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    rbft: {
+    boatInFront: {
         type: Boolean,
         required: false
     },
-    rbfn: {
-        type: Boolean,
-        required: false
-    },
-    rbbt: {
-        type: Boolean,
-        required: false
-    },
-    rbbn: {
-        type: Boolean,
-        required: false
-    },
-    rc: {
+    boatBehind: {
         type: Boolean,
         required: false
     },
