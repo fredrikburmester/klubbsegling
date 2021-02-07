@@ -25,6 +25,7 @@ const RaceSchema = new mongoose.Schema({
         type: Object,
         required: true
     },
+    
     // -> one part race:
     //      - namn
     //      - checkpoints
@@ -32,6 +33,7 @@ const RaceSchema = new mongoose.Schema({
     //          - boat
     //          - sailor
     //          - guests
+
     org: {
         type: String,
         required: true
