@@ -21,19 +21,10 @@ const RaceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    partRaces: { // checkpoints within
+    partRaces: { 
         type: Object,
         required: true
     },
-    
-    // -> one part race:
-    //      - namn
-    //      - checkpoints
-    //      - participants: 
-    //          - boat
-    //          - sailor
-    //          - guests
-
     org: {
         type: String,
         required: true
