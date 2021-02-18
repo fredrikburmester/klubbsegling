@@ -72,6 +72,22 @@
         </form>
     </div>
 
+    <div class="mb-5">
+        <h3>Rundningspunkter</h3>
+        <form action="/admin/remove/checkpoint" method="POST">
+            <div class="mb-2">
+                <label for="id" class="form-label">Rundningspunkt</label>
+                <select name="id" class="form-select" aria-label="Default select example">
+                    <% for (var i = 0; i < checkpoints.length;  i++ ) { %>
+                    <option value="<%= checkpoints[i]._id %>"><%= checkpoints[i].name %></option>
+                    <% } %>
+                </select>
+            </div>
+            <button type="button" onclick="getJson('checkpoint',this.form)" class="btn btn-primary">Visa mer</button>
+            <button type="submit" class="btn btn-danger">Ta bort</button>
+        </form>
+    </div>
+
     <h1 class="pb-2">Lägg till tävling</h1>
     <button class="btn btn-primary mb-4 mr-4" type="button" data-bs-toggle="collapse" data-bs-target="#addrace"
         aria-expanded="false" aria-controls="collapseExample">
@@ -79,7 +95,7 @@
     </button>
     <div class="collapse" id="addrace">
         <div class="mb-4">
-            <form action="/admin/create/race/template" method="GET">
+            <form action="/admin/create/race/template" method="POST">
                 <div class="mb-2">
                     <label for="name" class="form-label">Välj bland tidigare tävlingar</label>
                     <select name="name" class="form-select" aria-label="Default select example" required>
@@ -94,14 +110,14 @@
                         <% } %>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary btn-disabled" disabled>Använd denna tävling som
+                <button type="submit" class="btn btn-primary btn-disabled">Använd denna tävling som
                     mall</button>
             </form>
         </div>
         <div class="mb-5">
             <form action="/admin/create/race/new" method="POST">
-                <p for="">Skapa en ny tävling</p>
-                <input type="hidden">
+                <label for="hidden-input">Skapa ny tävling</label>
+                <input id="hidden-input" type="hidden">
                 <button type="submit" class="btn btn-primary">Skapa ny</button>
             </form>
         </div>
@@ -115,15 +131,42 @@
     </button>
     <div class="collapse" id="addserie">
         <div class="mb-5">
-            <form method="POST" action="/admin/addserie">
+            <form method="POST" action="/admin/add/serie">
                 <div class="mb-3">
                     <label for="name" class="form-label">Namn på serien</label>
-                    <input type="name" name="name" class="form-control" aria-describedby="emailHelp" required>
+                    <input type="name" name="name" class="form-control" required>
                     <div class="form-text">Seriens namn</div>
                 </div>
                 <div class="mb-3">
                     <label for="description" class="form-label">Beskrivning</label>
                     <textarea class="form-control" name="description" rows="3"></textarea required>
+                </div>
+                <button type="submit" class="btn btn-success">Lägg till</button>
+            </form>
+        </div>
+    </div>
+    <br>
+
+    <h1 class="pb-2">Lägg till rundningspunkt</h1>
+    <button class="btn btn-primary mb-4 mr-4" type="button" data-bs-toggle="collapse" data-bs-target="#addcheckpoint"
+        aria-expanded="false" aria-controls="collapseExample">
+        Se mer
+    </button>
+    <div class="collapse" id="addcheckpoint">
+        <div class="mb-5">
+            <form method="POST" action="/admin/add/checkpoint">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Namn på punkten</label>
+                    <input type="name" name="name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Beskrivning</label>
+                    <textarea class="form-control" name="description" rows="3"></textarea required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Koordinater</label>
+                    <input type="text" class="form-control" name="location" id="">
+                    <div class="form-text">Ex. 59.421466, 18.655587</div>
                 </div>
                 <button type="submit" class="btn btn-success">Lägg till</button>
             </form>
@@ -137,7 +180,7 @@
     </button>
     <div class="collapse" id="addhandicap">
         <div class="mb-5">
-            <form action="/admin/addhandicap" method="POST">
+            <form action="/admin/add/handicap" method="POST">
                 <div class="mb-3">
                     <label for="name" class="form-label">Namn på handikappsystemet</label>
                     <input type="name" name="name" class="form-control" aria-describedby="emailHelp" required>
