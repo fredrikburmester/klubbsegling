@@ -8,7 +8,6 @@ const Serie = require("../models/serie");
 const Handicap = require("../models/handicap");
 const Checkpoint = require("../models/checkpoint");
 
-//login page
 router.get('/', (req,res)=>{
     res.redirect('/dashboard');
 })

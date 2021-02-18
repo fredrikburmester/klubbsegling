@@ -2,70 +2,54 @@
 
 <div class="container my-2">
     <form>
-        <label for="year" class="form-label">År</label>
-        <select name="year" class="form-select">
-            <option selected value="all">Alla</option>
-            <option value="2018">2018</option>
-            <option value="2019">2019</option>
-            <option value="2020">2020</option>
-            <option value="2021">2021</option>
-        </select>
-        <label for="club" class="form-label">Klubb</label>
-        <select name="club" class="form-select">
-            <option selected value="all">Alla</option>
-            <% for (var i = 0; i < clubs.length;  i++ ) { %>
-            <option value="<%= clubs[i]._id %>"><%= clubs[i].name %></option>
-            <% } %>
-        </select>
-        </select>
-        <label for="serie" class="form-label">Serie</label>
-        <select name="serie" class="form-select">
-            <option selected value="all">Alla</option>
-            <% for (var i = 0; i < series.length;  i++ ) { %>
-            <option value="<%= series[i]._id %>"><%= series[i].name %></option>
-            <% } %>
-        </select>
+        <div class="row">
+            <div class="col">
+                <label for="year" class="form-label">År</label>
+                <select name="year" class="form-select">
+                    <option selected value="all">Alla</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="club" class="form-label">Klubb</label>
+                <select name="club" class="form-select">
+                    <option selected value="all">Alla</option>
+                    <% for (var i = 0; i < clubs.length;  i++ ) { %>
+                    <option value="<%= clubs[i]._id %>"><%= clubs[i].shortName %></option>
+                    <% } %>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="serie" class="form-label">Serie</label>
+                <select name="serie" class="form-select">
+                    <option selected value="all">Alla</option>
+                    <% for (var i = 0; i < series.length;  i++ ) { %>
+                    <option value="<%= series[i]._id %>"><%= series[i].name %></option>
+                    <% } %>
+                </select>
+            </div>
+            <div class="col">
+                
+            </div>
+        </div>
         <button type="button" class="btn btn-primary my-4"
             onclick="getRaces(this.form.year.value, this.form.club.value, this.form.serie.value)">Hämta tävlingar</button>
     </form>
 
-    <div class="races table-responsive" id="races">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Namn</th>
-                    <th scope="col">Klubb</th>
-                    <th scope="col">Klubb</th>
-                    <th scope="col">Klubb</th>
-                    <th scope="col">Klubb</th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-                
-            </tbody>
-            
-        </table>
+    <div id="table">
         <div class="spinner-border hidden" role="status" id="spinner">
             <span class="visually-hidden">Loading...</span>
         </div>
-    </div>
+        <div id="error">
 
-    <!-- <div class="accordion" id="accordionExample">
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="headingOne">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              Accordion Item #1
-              
-            </button>
-            <button type="button" class="btn btn-success">Registrera</button>
-          </h2>
-          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-              <strong>This is the first item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-            </div>
-          </div>
         </div>
-      </div> -->
+        <div id="cards">
+
+        </div>
+    </div>
 </div>
 
 <style>
@@ -87,26 +71,75 @@
 <script>
     async function getRaces(year = 'all', club = 'all', serie = 'all') {
         document.getElementById('spinner').classList.remove('hidden')
+        
         const response = await axios.get(`/json/races/${year}/${club}/${serie}`)
+        data = response.data.object
 
-        if(response.data.object.length > 0) {
-            
-            console.log('Response from database: ', response.data.object[0])
-            var tableBody = document.getElementById('table-body')
-            tableBody.innerHTML = ""
-            for (let i = 0; i < response.data.object.length; i = i + 1) {
-                let tr = document.createElement("tr");
-                tableBody.appendChild(tr);
-                
-                tr.insertAdjacentHTML('beforeend', `<td scope="row">${response.data.object[i].name} - ${response.data.object[i].club}<br><em>${response.data.object[i].startDate.split("T")[0]}</em></td>`);
-                tr.insertAdjacentHTML('beforeend', `<td>${response.data.object[i].club}</td>`);
-            }
+        if(data.length > 0) {
             document.getElementById('spinner').classList.add('hidden')
+            document.getElementById('error').innerText = ""
+            document.getElementById('cards').innerHTML = ""
+
+            for (let i = 0; i < data.length; i = i + 1) {
+                createRaceCard(data[i])
+            }
         } else {
-            document.getElementById('table-body').innerHTML = "0 Resultat"
+            document.getElementById('cards').innerHTML = ""
+            document.getElementById('error').innerText = "Inga matchande tävlingar!"
             document.getElementById('spinner').classList.add('hidden')
         }
+    }
+
+    function createRaceCard(race) {
+        var cards = document.getElementById('cards')
+
+        var card = document.createElement('div')
+        card.classList.add('card')
+        card.classList.add('mb-4')
+        card.classList.add('shadow')
+        card.classList.add('border-0')
+
+
+        var cardBody = document.createElement('div')
+        cardBody.classList.add('card-body')
         
+        var cardTitle = document.createElement('h5')
+        cardTitle.classList.add('card-title')
+        cardTitle.innerHTML = `${race.name} - ${race.club}`
         
+        var cardSubtitle = document.createElement('h6')
+        cardSubtitle.classList.add('card-subtitle')
+        cardSubtitle.classList.add('mb-2')
+        cardSubtitle.classList.add('text-muted')
+        cardSubtitle.innerHTML = `<em>${race.startDate.split("T")[0]}</em>`
+        
+        var cardText = document.createElement('p')
+        cardText.classList.add('card-text')
+        cardText.innerText = race.description
+        
+        var cardButton = document.createElement('button')
+        cardButton.innerHTML = "Registrera"
+        cardButton.classList.add('btn')
+        cardButton.classList.add('btn-success')
+        cardButton.classList.add('cardButton')
+
+        card.appendChild(cardBody)
+        cardBody.appendChild(cardTitle)
+        cardBody.appendChild(cardSubtitle)
+        cardBody.appendChild(cardText)
+        cardBody.appendChild(cardButton)
+
+        cards.appendChild(card)
     }
 </script>
+
+<style>
+    .card {
+        width: 100% !important;
+    }
+    .cardButton {
+        /* position: absolute !important;
+        top: 36.5% !important;
+        right: 20px !important; */
+    }
+</style>
