@@ -22,7 +22,7 @@ const RaceSchema = new mongoose.Schema({
         required: true
     },
     partRaces: { 
-        type: Object,
+        type: Array,
         required: true
     },
     org: {
@@ -41,7 +41,7 @@ const RaceSchema = new mongoose.Schema({
         type: Object,
         required: false
     },
-    image: {
+    images: {
         type: Object,
         required: false
     },
@@ -54,6 +54,10 @@ const RaceSchema = new mongoose.Schema({
         required: false
     },
     boatBehind: {
+        type: Boolean,
+        required: false
+    },
+    requireRegistration: {
         type: Boolean,
         required: false
     },
