@@ -7,6 +7,8 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require("passport");
 
+const pug = require('pug');
+
 //passport config:
 require('./config/passport')(passport)
 
@@ -18,9 +20,13 @@ mongoose.connect('mongodb://192.168.0.118/klubbsegling_1',{useNewUrlParser: true
 //static files
 app.use('/static', express.static('public'))
 
-//EJS
+app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/'));
+
+//EJS / Pug
 app.set('view engine','ejs');
+// app.set('views','./views');
 app.use(expressEjsLayout);
+app.disable('view cache')
 
 //BodyParser
 app.use(express.urlencoded({extended : false}));
@@ -46,5 +52,24 @@ app.use('/',require('./routes/index'));
 app.use('/users',require('./routes/users'));
 app.use('/admin',require('./routes/admin'));
 app.use('/json',require('./routes/object'));
+
+function exitHandler(options, exitCode) {
+    if (options.cleanup) console.log('clean');
+    if (exitCode || exitCode === 0) console.log(exitCode);
+    if (options.exit) process.exit();
+}
+
+//do something when app is closing
+process.on('exit', exitHandler.bind(null,{cleanup:true}));
+
+//catches ctrl+c event
+process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+
+// catches "kill pid" (for example: nodemon restart)
+process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
+process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
+
+//catches uncaught exceptions
+process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
 
 app.listen(3000); 
