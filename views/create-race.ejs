@@ -21,91 +21,31 @@
 
 <div class="container my-5 hidden-form" id="content">
 
+    <% if (useTemplate) { %>
     <h1 class="pb-4">Skapa tävling</h1>
-
-    <% if (template) { %>
-
-    <!-- <form action="/admin/createRaceObject" method="POST">
-        <div class="mb-3">
-            <label for="name" class="form-label">Tävlingens namn</label>
-            <input type="name" name="name" class="form-control" value="<%= raceTemplate.name %>">
-            <div class="form-text">Klubbens namn, t.ex. Trälhavets Båtklubb</div>
-        </div>
-
-        <div class="mb-2">
-            <label for="club" class="form-label">Klubb</label>
-            <select name="club" class="form-select" aria-label="Default select example">
-                <option value="<%= raceTemplate.club %>"><%= raceTemplate.club %></option>
-                <% for (var i = 0; i < clubs.length;  i++ ) { %>
-                <% if(clubs[i].name != raceTemplate.club) {%>
-                <option value="<%= clubs[i].name %>"><%= clubs[i].name %></option>
-                <%}%>
-                <% } %>
-            </select>
-        </div>
-
-        <div class="mb-2">
-            <label for="serie" class="form-label">Klubb</label>
-            <select name="serie" class="form-select" aria-label="Default select example">
-                <option value="<%= raceTemplate.club %>"><%= raceTemplate.club %></option>
-                <% for (var i = 0; i < clubs.length;  i++ ) { %>
-                <% if(clubs[i].name != raceTemplate.club) {%>
-                <option value="<%= clubs[i].name %>"><%= clubs[i].name %></option>
-                <%}%>
-                <% } %>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="name" class="form-label">Startdatum</label>
-            <input type="date" name="startdate" class="form-control"
-                value="<%= (raceTemplate.startDate.getFullYear() + '-' + (raceTemplate.startDate.getMonth()+1) + '-' + raceTemplate.startDate.getDate()).toString()  %>">
-            <div class="form-text"></div>
-        </div>
-
-        <div class="mb-3">
-            <label for="name" class="form-label">Slutdatum</label>
-            <input type="date" name="enddate" class="form-control"
-                value="<%= (raceTemplate.endDate.getFullYear() + '-' + (raceTemplate.endDate.getMonth()+1) + '-' + raceTemplate.endDate.getDate()).toString()  %>">
-            <div class="form-text"></div>
-        </div>
-
-        <div class="mb-2">
-            <label for="name" class="form-label">Organisatör</label>
-            <select name="name" class="form-select" aria-label="Default select example">
-                <option value="<%= raceTemplate.org %>"><%= raceTemplate.org %></option>
-                <% if(user.name != raceTemplate.org) {%>
-                <option value="<%= user.name %>"><%= user.name %></option>
-                <%}%>
-                <% for (var i = 0; i < orgs.length;  i++ ) { %>
-                <% if(orgs[i].name != raceTemplate.club) {%>
-                <option value="<%= orgs[i].name %>"><%= orgs[i].name %></option>
-                <%}%>
-                <% } %>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="name" class="form-label">Tävlingens namn</label>
-            <input type="name" name="name" class="form-control" value="<%= raceTemplate.name %>">
-            <div class="form-text">Klubbens namn, t.ex. Trälhavets Båtklubb</div>
-        </div>
-
-    </form> -->
-
     <% } else { %>
+    <h1 class="pb-4">Skapa tävling from mall</h1>
+    <% } %>
 
     <form class="pb-5">
         <div class="hidden-form-element form-step mb-3 step1" id="step1">
             <label for="name" class="form-label">Tävlingens namn</label>
-            <input type="name" name="name" class="form-control" value="" required>
+            <% if (useTemplate) { %>
+            <input type="name" name="name" class="form-control" id="name" value="<%= template.name %>" required>
+            <% } else { %>
+            <input type="name" name="name" class="form-control" id="name" value="" required>
+            <% }%>
             <div class="form-text">Klubbens namn, t.ex. Trälhavets Båtklubb</div>
         </div>
 
         <div class="hidden-form-element form-step mb-2 step1" id="step2">
             <label for="club" class="form-label">Klubb</label>
             <select name="club" class="form-select" aria-label="Default select example" required>
+                <% if (useTemplate) { %>
+                <option value="<%= template.club %>"><%= template.club %></option>
+                <% } else { %>
                 <option value=""></option>
+                <% }%>
                 <% for (var i = 0; i < clubs.length;  i++ ) { %>
                 <option value="<%= clubs[i].name %>"><%= clubs[i].name %></option>
                 <% } %>
@@ -115,7 +55,11 @@
         <div class="hidden-form-element form-step mb-2 step1" id="step2">
             <label for="serie" class="form-label">Serie</label>
             <select name="serie" class="form-select" aria-label="Default select example" required>
+                <% if (useTemplate) { %>
+                <option value="<%= template.serie %>"><%= template.serie %></option>
+                <% } else { %>
                 <option value=""></option>
+                <% }%>
                 <% for (var i = 0; i < series.length;  i++ ) { %>
                 <option value="<%= series[i].name %>"><%= series[i].name %></option>
                 <% } %>
@@ -125,7 +69,11 @@
 
         <div class="hidden-form-element form-step mb-3 step2" id="step3">
             <label for="startdate" class="form-label">Startdatum</label>
+            <% if (useTemplate) { %>
+            <input type="date" name="startdate" class="form-control" value="<%= template.startDate %>" required>
+            <% } else { %>
             <input type="date" name="startdate" class="form-control" value="" required>
+            <% }%>
             <div class="form-text"></div>
         </div>
 
@@ -137,25 +85,26 @@
 
         <div class="hidden-form-element form-step mb-2 step3" id="step5">
             <label for="org" class="form-label">Organisatör</label>
-            <select name="org" class="form-select" aria-label="Default select example" required>
+            <select onchange="updateOrg();" name="org" class="form-select" aria-label="Default select example" id="org"
+                required>
                 <option value="<%= user.name %>"><%= user.name %></option>
                 <% for (var i = 0; i < orgs.length;  i++ ) { %>
                 <% if(orgs[i].name != user.name) {%>
                 <option value="<%= orgs[i].name %>"><%= orgs[i].name %></option>
-                <%}%>
-                    <% } %>
+                <% } %>
+                <% } %>
             </select>
         </div>
 
         <div class="hidden-form-element form-step mb-3 step3">
             <label for="tel" class="form-label">Telefon</label>
-            <input type="tel" name="tel" class="form-control" value="">
+            <input type="tel" name="tel" class="form-control" value="" id="tel" disabled>
             <div class="form-text">T.ex. +46 72 505 06 12</div>
         </div>
 
         <div class="hidden-form-element form-step mb-3 step3">
             <label for="email" class="form-label">Epost</label>
-            <input type="email" name="email" class="form-control">
+            <input type="email" name="email" class="form-control" value="" id="email" disabled>
             <div class="form-text">T.ex. förnamn.efternamn@gmail.com</div>
         </div>
 
@@ -173,47 +122,43 @@
 
         <div class="hidden-form-element form-step mb-3 step1">
             <label for="description" class="form-label">Beskrivning</label>
-            <textarea class="form-control" name="description" rows="3"></textarea required>
+            <% if (useTemplate) { %>
+            <textarea class="form-control" name="description" rows="3" value=""><%= template.description %></textarea required>
+            <% } else { %>
+                <textarea class="form-control" name="description" rows="3"></textarea required>
+            <% }%>
+                    
         </div>
 
         <div class="hidden-form-element form-step form-check step4 mb-4" >
-            <input class="form-check-input" type="checkbox" value="" id="check1" name="check1">
-            <label class="form-check-label" for="check1">
-                Rapportera båt framför - tid
+            <% if (useTemplate) { %> 
+                <input class="form-check-input" type="checkbox" id="boatInFront" name="boatInFront">
+            <% } else { %>
+                <input class="form-check-input" type="checkbox" id="boatInFront" name="boatInFront">
+            <% } %>
+            <label class="form-check-label" for="boatInFront">
+                Rapportera båt framför
             </label>
         </div>
 
         <div class="hidden-form-element form-step form-check step4 mb-4" >
-            <input class="form-check-input" type="checkbox" value="" id="check2" name="check2">
-            <label class="form-check-label" for="check2">
-                Rapportera båt framför - segelnr.
+            <% if (useTemplate) { %> 
+                <input class="form-check-input" type="checkbox" id="boatBehind" name="boatBehind">
+            <% } else { %>
+                <input class="form-check-input" type="checkbox" id="boatBehind" name="boatBehind">
+            <% }%>
+            <label class="form-check-label" for="boatBehind">
+                Rapportera båt bakom
             </label>
         </div>
 
         <div class="hidden-form-element form-step form-check step4 mb-4" >
-            <input class="form-check-input" type="checkbox" value="" id="check3" name="check3">
-            <label class="form-check-label" for="check3">
-                Rapportera båt bakom - tid
-            </label>
-        </div>
-
-        <div class="hidden-form-element form-step form-check step4 mb-4" >
-            <input class="form-check-input" type="checkbox" value="" id="check4" name="check4">
-            <label class="form-check-label" for="check4">
-                Rapportera båt bakom - segelnr.
-            </label>
-        </div>
-
-        <div class="hidden-form-element form-step form-check step4 mb-4" >
-            <input class="form-check-input" type="checkbox" value="" id="check5" name="check5">
-            <label class="form-check-label" for="check5">
-                Rapportera punkt
-            </label>
-        </div>
-
-        <div class="hidden-form-element form-step form-check step4 mb-4">
-            <input class="form-check-input" type="checkbox" checked="true" value="" id="check6" name="check6">
-            <label class="form-check-label" for="check6">
+            <% if (useTemplate) { %> 
+                <input class="form-check-input" type="checkbox" id="requireRegistration" name="requireRegistration">
+            <% } else { %>
+                <input class="form-check-input" type="checkbox" id="requireRegistration" name="requireRegistration">
+            <% }%>
+            <label class="form-check-label" for="requireRegistration">
                 Krav på registrering
             </label>
         </div>
@@ -231,7 +176,11 @@
         <div class="hidden-form-element form-step mb-2 pb-2 step1" >
             <label for="handicap" class="form-label">Handikappsystem</label>
             <select name="handicap" class="form-select" aria-label="Default select example">
-                <option value="" selected="selected"></option>
+                <% if (useTemplate) { %>
+                    <option value="<%= template.handicap %>" selected="selected"><%= template.handicap %></option>
+                <% } else { %>
+                    <option value="" selected="selected"></option>
+                <% }%>
                 <% for (var i = 0; i < handicaps.length;  i++ ) { %>
                 <option value="<%= handicaps[i].name %>"><%= handicaps[i].name %></option>
                 <%}%>
@@ -239,19 +188,42 @@
         </div>
 
         <div class="hidden-form-element form-step mb-3 step5">
-            <label for="partraces" class="form-label">Delseglingar</label>
-            <input type="number" name="partraces" class="form-control" value="1" id="partraces">
-            <div class="form-text">Antal delseglingar totalt</div>
-            
-            <div class="my-4">
-                <button class="btn btn-success" type="button" onclick="createPartRaces(this.form.partraces.value)">Skapa delseglingar</button>
-            </div>
-            <div id="partraces-div" class="my-4"> 
-
-            </div>
-        </div>
+            <div id="partraces">
+                <div id="partrace-1">
+                    <div class="my-2">
+                        <h4>Delseglingar</h4>
+                        <label for="partrace-1-name" class="form-label">Delsegling 1</label>
+                        <input type="text" name="partrace-1-name" id="partrace-1-name" class="form-control" value="">
+                    </div>
         
-        <div class="hidden-form-element form-step mb-3 step6" id="groups"></div>
+                    <div class="my-2">
+                        <label for="partrace-1-startPoint" class="form-label">Startpunkt</label>
+                        <select name="partrace-1-startPoint" class="form-select" id="partrace-1-startPoint" multiple="multiple">
+                            <% for (var i = 0; i < checkpoints.length;  i++ ) { %>
+                                <option value="<%= checkpoints[i].name %>"><%= checkpoints[i].name %></option>
+                            <%}%>
+                        </select>
+                    </div>
+                    
+                    <div class="my-2">
+                        <label for="partrace-1-finishPoint" class="form-label">Målpunkt</label>
+                        <select name="partrace-1-finishPoint" class="form-select" id="partrace-1-finishPoint" multiple="multiple">
+                            <% for (var i = 0; i < checkpoints.length;  i++ ) { %>
+                                <option value="<%= checkpoints[i].name %>"><%= checkpoints[i].name %></option>
+                            <%}%>
+                        </select>
+                    </div>
+                            
+                    <div id="partrace-1-checkpoints" class="my-2">
+        
+                    </div>
+                                
+                    <button type="button" class="btn btn-danger my-2" onclick="addCheckpointFor(1)">Lägg till rundningspunkt</button><br>
+                    <hr>
+                </div>
+            </div>
+            <button type="button" class="btn btn-danger my-2" onclick="addPartRace()">Lägg till delsegling</button>
+        </div>
 
         <div class="hidden-form-element form-step mb-3 step6">
             <button type="button" class="btn btn-success" id="submit-button" onclick="createRaceObject(this.form)">Lägg till</button>
@@ -260,19 +232,17 @@
 
     <div id="success" class="hidden-form-element">
         <h3>Tävling skapad</h3>
-        <div id="info"></div>
-        <button type="button" class="btn btn-success" onclick="window.location('/admin')">Admin panel</button>
+        <div id="info-success"></div>
+        <button type="button" class="btn btn-success" onclick="location.href = '/admin'">Admin panel</button>
         <button type="button" class="btn btn-success" onclick="goToStep(1)">Skapa en till</button>
     </div>
 
     <div id="error" class="hidden-form-element">
         <h3 style="color: red">Någonting gick fel</h3>
-        <div id="info"></div>
+        <div id="info-error"></div>
         <button type="button" class="btn btn-success" onclick="window.location('/admin')">Admin panel</button>
         <button type="button" class="btn btn-success" onclick="goToStep(1)">Försök igen</button>
     </div>
-
-    <% } %>
 
     <nav style="position: fixed; bottom: 20px;" aria-label="...">
         <ul class="pagination">
@@ -289,10 +259,92 @@
 </div>
 
 <script>
+    var orgs = <%- JSON.stringify(orgs) %>;
+</script>
+
+<script>
 let activeStep = 1
 let totalSteps = 6
+let numOfPartraces = 1
+let checkpoints = []
 
-// var reg = 0;
+function updateOrg() {
+    value = document.getElementById('org').value 
+    orgs.forEach(org => {
+        if(org.name == value) {
+            email.value = org.email
+            tel.value = org.tel
+        }
+    });
+}
+
+function updatePartRaceName() {
+    document.getElementById('partrace-1-name').value = document.getElementById('name').value
+}
+
+function addPartRace() {
+    numOfPartraces = numOfPartraces + 1
+
+    var partraces = document.getElementById('partraces')
+    
+    // Create part race
+    var div = document.createElement('div')
+    div.id = "partrace-" + (partraces)
+
+    var div2 = document.createElement('div')
+    div2.classList.add('my-2')
+    div2.innerHTML = "<label for='partrace-"+numOfPartraces+"-name' class='form-label'>Delsegling "+numOfPartraces+"</label><input type='text' name='partrace-"+numOfPartraces+"-name' id='partrace-"+numOfPartraces+"-name' class='form-control' value=''>"
+    div.appendChild(div2)
+
+    var div3 = document.createElement('div')
+    div3.classList.add('my-2')
+    div3.innerHTML = "<label for='partrace-"+numOfPartraces+"-startPoint' class='form-label'>Startpunkt</label><select name='partrace-"+numOfPartraces+"-startPoint' class='form-select' id='partrace-"+numOfPartraces+"-startPoint' multiple='multiple'><% for (var i = 0; i < checkpoints.length;  i++ ) { %><option value='<%= checkpoints[i].name %>'><%= checkpoints[i].name %></option><%}%></select>"
+    div.appendChild(div3)
+
+
+    var div4 = document.createElement('div')
+    div4.classList.add('my-2')
+    div4.innerHTML = "<label for='partrace-"+numOfPartraces+"-finishPoint' class='form-label'>Målpunkt</label><select name='partrace-"+numOfPartraces+"-finishPoint' class='form-select' id='partrace-"+numOfPartraces+"-finishPoint' multiple='multiple'><% for (var i = 0; i < checkpoints.length;  i++ ) { %><option value='<%= checkpoints[i].name %>'><%= checkpoints[i].name %></option><%}%></select>"
+    div.appendChild(div4)
+
+    var div5 = document.createElement('div')
+    div5.id = "partrace-" + numOfPartraces + "-checkpoints"
+    div.appendChild(div5)
+
+    var button = document.createElement('button')
+    button.type = "button"
+    button.classList.add("btn")
+    button.classList.add("btn-secondary")
+    button.classList.add("my-2")
+    button.addEventListener("click", function(e) {
+        addCheckpointFor(numOfPartraces)
+    }, false);
+    button.innerText = "Lägg till rundningspunkt"
+    div.appendChild(button)
+
+    var hr = document.createElement('hr')
+    div.appendChild(hr)
+
+    partraces.appendChild(div)
+}
+
+function addCheckpointFor(id) { // partrace-#
+    console.log(checkpoints)
+
+    if(checkpoints[id]) {
+        checkpoints[id] =  checkpoints[id] + 1
+    } else {
+        checkpoints[id] = 1
+    }
+
+    var checkpointsDiv = document.getElementById("partrace-" + id + "-checkpoints")
+
+    var div = document.createElement('div')
+    div.classList.add('my-2')
+    div.innerHTML = "<label for='partrace-" + id + "-checkpoint-name' class='form-label'>Punkt</label><select name='partrace-" + id + "-checkpoint-name' class='form-select' id='partrace-" + id + "-checkpoint-name' multiple='multiple'><% for (var i = 0; i < checkpoints.length;  i++ ) { %><option value='<%= checkpoints[i].name %>'><%= checkpoints[i].name %></option><%}%></select>"
+
+    checkpointsDiv.appendChild(div)
+}
 
 window.onload = function() {
     var spinner = document.getElementById('spinner')
@@ -305,6 +357,9 @@ window.onload = function() {
     for (let item of step1) {
         item.classList.remove('hidden-form-element')
     }
+
+    updateOrg()
+    updatePartRaceName()
 };
 
 // function setStepHighlight(step) {
@@ -324,6 +379,10 @@ function goToStep(step) {
         element.classList.remove('hidden-form-element')
     });
 
+    if(numOfPartraces == 1) {
+        updatePartRaceName()
+    }
+
     activeStep = step
 
     if (activeStep == 1) {
@@ -339,6 +398,8 @@ function goToStep(step) {
 
     success.classList.add("hidden-form-element")
     error.classList.add("hidden-form-element")
+
+    
 }
 
 function previousStep() {
@@ -353,42 +414,35 @@ function nextStep() {
     }
 }
 
-function createPartRaces(num) {
-    if (num < 10 && num >= 0) {
-        var parent = document.getElementById('partraces-div')
-        parent.innerHTML = ""
-
-        for (let index = 1; index <= num; index++) {
-            childElement = document.createElement('div');
-            childElement.classList.add('partrace')
-            appendChildElement = parent.appendChild(childElement)
-            appendChildElement.innerHTML = "<h3>Delsegling "+index+"</h3><div class='mb-3'><label for='partrace"+index+"'  class='form-label'>Namn</label><input id='partrace"+index+"' type='text' name='partrace"+index+"' class='form-control' value=''><div class='form-text'>Namn på delseglingen</div></div><div class='mb-3'><label for='racegroup"+index+"' class='form-label'>Grupper</label><input type='text' racegroup"+index+" name='racegroup"+index+"' class='form-control' value='' id='racegroup"+index+"' placeholder='grupp1,grupp2'><div class='form-text'>Separerade med komma, t.ex. grupp1,grupp2</div></div>"
-        }
-    }
-}
-
 function createRaceObject(form) {
-    if (!form.email.value || !form.tel.value || !form.org.value || !form.handicap.value || !form.name.value || !form.startdate.value || !form.enddate.value || !form.club.value || !form.club.value || !form.description.value) {
+    if (!form.email.value || !form.tel.value || !form.org.value || !form.handicap.value || !form.name.value || !form.startdate.value || !form.enddate.value || !form.club.value || !form.description.value) {
         alert("Du missade någonting. Var vänlig gå tillbaka och fyll i alla fält.")
     } else {
         var partRacesArray = []
 
-        var numOfPartRaces = document.getElementById('partraces').value
-        
-        for (let index = 1; index <= numOfPartRaces; index++) {
-            var partRaceName = document.getElementById('partrace' + index).value
-            var groups = document.getElementById('racegroup' + index).value
-            var groups = groups.split(",");
-
-            for (i = 0; i < groups.length; i++) {
-                groups[i] = trimString(groups[i])
+        for (let i = 1; i <= numOfPartraces; i++) {
+            var partRaceName = document.getElementById('partrace-' + i + "-name").value
+            var start = document.getElementById('partrace-' + i + "-startPoint").value
+            var finish = document.getElementById('partrace-' + i + "-finishPoint").value
+            
+            var checkpointsObject = []
+            for(let j = 1; j <= checkpoints[i]; j++ ) {
+                let name = document.getElementById('partrace-' + i + "-checkpoint-name").value
+                checkpointsObject.push({name: name})
+            }
+            
+            var partRace = {
+                name: partRaceName, 
+                startPoint: start,
+                finishPoint: finish,
+                checkpoints: checkpointsObject
             }
 
-            var partRace = {name: partRaceName, groups: groups}
-
             partRacesArray.push(partRace)
+            
         }
-
+        console.log(partRacesArray)
+        
         var Race = new FormData()
 
         Array.from(form.pdf.files).forEach(file => {
@@ -408,15 +462,12 @@ function createRaceObject(form) {
         Race.append('org', form.org.value)
         Race.append('tel', form.tel.value)
         Race.append('email', form.email.value)
-        Race.append('check1', form.check1.checked)
-        Race.append('check2', form.check2.checked)
-        Race.append('check3', form.check3.checked)
-        Race.append('check4', form.check4.checked)
-        Race.append('check5', form.check5.checked)
-        Race.append('check6', form.check6.checked)
+        Race.append('boatInFront', form.boatInFront.checked)
+        Race.append('boatBehind', form.boatBehind.checked)
+        Race.append('requireRegistration', form.requireRegistration.checked)
         Race.append('regOpen', form.regOpen.value)
         Race.append('regClose', form.regClose.value)
-        Race.append('partRaces', partRacesArray)
+        Race.append('partRaces', JSON.stringify(partRacesArray))
         Race.append('serie', form.serie.value)
 
         axios.post('/admin/add/race', Race, {
@@ -428,12 +479,14 @@ function createRaceObject(form) {
             if(data.success == true) {
                 var p = document.createElement("p")
                 p.innerHTML = data.data.name
+                info = document.getElementById('info-success')
                 info.appendChild(p)
                 success.classList.remove("hidden-form-element")
-                // window.location = "/json/race/" + response.data.response.id;  
+                //window.location = "/json/race/" + response.data.response.id;  
             } else {
                 var p = document.createElement("p")
                 p.innerHTML = data.error
+                info = document.getElementById('info-error')
                 info.appendChild(p)
                 error.classList.remove("hidden-form-element")
             }
