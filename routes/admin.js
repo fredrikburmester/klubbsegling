@@ -24,6 +24,7 @@ const Race = require("../models/race");
 const Club = require("../models/club");
 const Serie = require("../models/serie");
 const Handicap = require("../models/handicap");
+const Checkpoint = require("../models/checkpoint");
 
 router.get('/', ensureAuthenticated, async (req, res) => {
 
@@ -31,6 +32,7 @@ router.get('/', ensureAuthenticated, async (req, res) => {
     const clubs = await Club.find()
     const series = await Serie.find()
     const handicaps = await Handicap.find()
+    const checkpoints = await Checkpoint.find()
 
     res.render('admin', {
         user: req.user,
@@ -38,6 +40,7 @@ router.get('/', ensureAuthenticated, async (req, res) => {
         clubs: clubs,
         series: series,
         handicaps: handicaps,
+        checkpoints: checkpoints,
         errors: []
     });
 })
@@ -58,17 +61,15 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
         tel,
         pdf,
         images,
-        check1,
-        check2,
-        check3,
-        check4,
-        check5,
-        check6,
+        boatInFront,
+        boatBehind,
+        requireRegistration,
         handicap,
         regOpen,
         regClose,
         partRaces,
-        serie
+        serie,
+        location
     } = req.body
 
     let errors = [];
@@ -81,14 +82,38 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
         adminLevel: 3
     })
 
-    if (req.params.obj == 'handicap') {
+    if(req.params.obj == 'checkpoint'){
+        if (name && location) {
+            Checkpoint.findOne({
+                name: name
+            }, function (found) {
+                if (!found) {
+                    const newObj = new Checkpoint({
+                        name: name,
+                        description: description,
+                        location: location
+                    });
+                    newObj.save()
+                } else {
+                    errors.push({
+                        msg: "Checkpunkten finns redan"
+                    })
+                }
+            });
+        } else {
+            errors.push({
+                msg: "Det saknas ett fält"
+            })
+        }
+    } else if (req.params.obj == 'handicap') {
         if (name) {
             Handicap.findOne({
                 name: name
             }, function (found) {
                 if (!found) {
                     const newObj = new Handicap({
-                        name: name
+                        name: name,
+                        description: description
                     });
                     newObj.save()
                 } else {
@@ -179,43 +204,42 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
         } else {
             errors.push({
                 msg: "Det saknas ett fält"
-            })
+            }) 
         }
     } else if (req.params.obj == 'race') {
         if (name && startDate && endDate && club && org && handicap && serie) {
-            function fixBool(s) {
-                if (s == 'on') return 1;
-                else return 0;
+            function fixBool(check) {
+                console.log(check)
+                if (check == "on" || check == "true" || check == true) {
+                    return true;
+                } else {
+                    return false;
+                } 
+            } 
+
+            function checkDate(date) {
+                if(!date) {
+                    return '2000-01-01'
+                } else {
+                    return date
+                } 
             }
 
-            var c1 = fixBool(check1)
-            var c2 = fixBool(check2)
-            var c3 = fixBool(check3)
-            var c4 = fixBool(check4)
-            var c5 = fixBool(check5)
-            var c6 = fixBool(check6)
+            var imagefilenames = []
+            var pdffilenames = []
 
-            if(!regOpen) {
-                var rO = '2000-01-01'
-            } else {
-                rO = regOpen
-            }
-
-            if(!regClose) {
-                var rC = '2000-01-01'
-            } else {
-                rC = regClose
-            }
-
-            if(req.files) {
-                if(req.files.pdf !== null) {
+            if(req.files !== null) {
+                if(req.files.pdf !== undefined) {
                     if(req.files.pdf.length === undefined) {
                         req.files.pdf.mv('./public/uploads/races/' + name + '/pdf/' + req.files.pdf.name, function (err) {
                             if (err) {
                                 errors.push({
                                     msg: "Någonting gick snett med bilden!"
                                 })
+                            } else {
+                                pdffilenames.push({filename: req.files.pdf.name})
                             }
+
                         });
                     } else {
                         Array.from(req.files.pdf).forEach(file => {
@@ -224,19 +248,23 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
                                     errors.push({
                                         msg: "Någonting gick snett med bilden!"
                                     })
+                                } else {
+                                    pdffilenames.push({filename: req.files.pdf.name})
                                 }
                             });
                         });
                     }
-                }
+                } 
                 
-                if(req.files.images !== null) {
+                if(req.files.images !== undefined) {
                     if(req.files.images.length === undefined) {
                         req.files.images.mv('./public/uploads/races/' + name + '/images/' + req.files.images.name, function (err) {
                             if (err) {
                                 errors.push({
                                     msg: "Någonting gick snett med bilden!"
                                 })
+                            } else {
+                                pdffilenames.push({filename: req.files.images.name})
                             }
                         });
                     } else {
@@ -246,6 +274,8 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
                                     errors.push({
                                         msg: "Någonting gick snett med bilden!"
                                     })
+                                } else {
+                                    pdffilenames.push({filename: req.files.file.name})
                                 }
                             });
                         });
@@ -254,7 +284,11 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
             }
 
             var newObj = null
-
+            partRacesJson = JSON.parse(partRaces)
+            partRacesJson.forEach(race => {
+                race['participants'] = []
+            });
+ 
             Race.findOne({
                 name: name
             }, function (found) {
@@ -268,19 +302,19 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
                         tel: tel,
                         email: email,
                         description: description,
-                        rbft: c1,
-                        rbfn: c2,
-                        rbbt: c3,
-                        rbbn: c4,
-                        rc: c5,
-                        reg: c6,
+                        boatInFront: fixBool(boatInFront),
+                        boatBehind: fixBool(boatBehind),
+                        requireRegistration: fixBool(requireRegistration),
                         handicap: handicap,
-                        regOpen: new Date(rO),
-                        regclose: new Date(rC),
-                        partRaces: partRaces,
-                        serie: serie
+                        regOpen: new Date(checkDate(regOpen)),
+                        regClose: new Date(checkDate(regClose)),
+                        partRaces: partRacesJson,
+                        serie: serie,
+                        images: imagefilenames,
+                        pdf: pdffilenames
                     });
                     newObj.save()
+                    console.log(newObj)
                 } else {
                     errors.push({
                         msg: "Ett race med samma namn finns redan"
@@ -374,36 +408,85 @@ router.post('/remove/:name(serie|handicap|race|club|checkpoint)?', ensureAuthent
 })
 
 router.post('/create/race/:temp(template|new)', ensureAuthenticated, async (req, res) => {
-    let errors = []
+    const {
+        name
+    } = req.body
 
+    let errors = []
+    var template = null
+    var useTemplate = false
+    
     const races = await Race.find()
     const clubs = await Club.find()
     const series = await Serie.find()
     const handicaps = await Handicap.find()
-
+    const checkpoints = await Checkpoint.find()
     const orgs = await User.find({
-        adminLevel: 3
+        adminLevel: 5
     })
 
-    var template = false
-
+    console.log(orgs)
+    
     if (req.params.temp == 'template') {
-        template = true
+        useTemplate = true
+        template = await Race.findOne({
+            name: name
+        }, function (err, found) {
+            if (!found) {
+                errors.push({
+                    msg: "Det finns tyvärr inget sådant race."
+                })
+            } 
+        });
     }
 
-    res.render('create-race', {
-        errors: errors,
-        success: 'false',
-        data: "",
-        user: req.user,
-        races: races,
-        clubs: clubs,
-        series: series,
-        handicaps: handicaps,
-        template: template,
-        orgs: orgs
-    })
-
+    if(errors.length > 0) {
+        res.render('admin', {
+            errors: errors,
+            success: 'false',
+            data: "",
+            user: req.user,
+            races: races,
+            clubs: clubs,
+            series: series,
+            handicaps: handicaps,
+            checkpoints: checkpoints,
+            orgs: orgs,
+        })
+    } else {
+        res.render('create-race', {
+            errors: errors,
+            success: 'true',
+            data: "",
+            user: req.user,
+            races: races,
+            clubs: clubs,
+            series: series,
+            handicaps: handicaps,
+            checkpoints: checkpoints,
+            useTemplate: useTemplate,
+            orgs: orgs,
+            template: template
+        })
+    }
 })
+
+// router.get('/races', ensureAuthenticated, async (req, res) => {
+
+//     const races = await Race.find()
+//     const clubs = await Club.find()
+//     const series = await Serie.find()
+//     const handicaps = await Handicap.find()
+
+//     res.render('races', {
+//         user: req.user,
+//         races: races,
+//         clubs: clubs,
+//         series: series,
+//         handicaps: handicaps,
+//         errors: []
+//     });
+// })
+
 
 module.exports = router;
