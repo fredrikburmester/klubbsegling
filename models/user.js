@@ -38,9 +38,13 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    date: {
+    date: { 
         type: Date,
         default: Date.now
+    },
+    races: { // id of races this user participated in
+        type: Object,
+        required: false
     }
 });
 
