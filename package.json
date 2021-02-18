@@ -1,10 +1,11 @@
 {
-  "name": "Klubbsegling",
+  "name": "klubbsegling",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon app.js",
+    "dev": "nodemon --watch ./app.js"
   },
   "keywords": [],
   "author": "",
@@ -25,11 +26,13 @@
     "express-fileupload": "^1.2.1",
     "express-session": "^1.17.1",
     "materialize-css": "^1.0.0-rc.2",
+    "mdb-ui-kit": "^3.2.0",
     "mongoose": "^5.9.21",
     "multer": "^1.4.2",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "pug": "^3.0.0"
   }
 }
