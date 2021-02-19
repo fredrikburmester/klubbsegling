@@ -13,6 +13,16 @@ const bodyParser = require("body-parser");
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
+router.get('/user/:id', async function(req, res) {
+    if(req.user === undefined) {
+        res.status(401).end();
+    } else {
+        var object = await User.findById({ _id: req.params.id})
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ object }));
+    }
+});
+
 router.get('/:name(serie|handicap|race|club|checkpoint|boat)?/:id', async function(req, res) {
 
     if(req.params.name == 'serie') var object = await Serie.find({_id: req.params.id})
@@ -30,7 +40,6 @@ router.get('/races/:year/:club/:serie', async function(req, res) {
     var year = req.params.year
     var club = req.params.club
     var serie = req.params.serie
-    console.log(year, club, serie)
 
     if (club == 'all') {
         club = '/*'
