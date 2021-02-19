@@ -47,7 +47,7 @@
 
         </div>
         <div id="cards">
-
+            
         </div>
     </div>
 </div>
@@ -69,19 +69,35 @@
 </style>
 
 <script>
+
+    var year;
+    var club;
+    var serie;
+
+    var user = '<%- JSON.stringify(user) %>'
+    if(user.length > 0) {
+        var user = JSON.parse('<%- JSON.stringify(user) %>')
+    } else {
+        user = null
+    }
+
     async function getRaces(year = 'all', club = 'all', serie = 'all') {
+        year = year
+        club = club
+        serie = serie
+
         document.getElementById('spinner').classList.remove('hidden')
         
         const response = await axios.get(`/json/races/${year}/${club}/${serie}`)
-        data = response.data.object
+        races = response.data.object
 
-        if(data.length > 0) {
+        if(races.length > 0) {
             document.getElementById('spinner').classList.add('hidden')
             document.getElementById('error').innerText = ""
             document.getElementById('cards').innerHTML = ""
 
-            for (let i = 0; i < data.length; i = i + 1) {
-                createRaceCard(data[i])
+            for (let i = 0; i < races.length; i = i + 1) {
+                createRaceCard(races[i])
             }
         } else {
             document.getElementById('cards').innerHTML = ""
@@ -98,7 +114,6 @@
         card.classList.add('mb-4')
         card.classList.add('shadow')
         card.classList.add('border-0')
-
 
         var cardBody = document.createElement('div')
         cardBody.classList.add('card-body')
@@ -118,28 +133,37 @@
         cardText.innerText = race.description
         
         var cardButton = document.createElement('button')
-        cardButton.innerHTML = "Registrera"
         cardButton.classList.add('btn')
-        cardButton.classList.add('btn-success')
         cardButton.classList.add('cardButton')
 
         card.appendChild(cardBody)
         cardBody.appendChild(cardTitle)
         cardBody.appendChild(cardSubtitle)
         cardBody.appendChild(cardText)
-        cardBody.appendChild(cardButton)
+
+        if(user) {
+            found = false
+            user.races.forEach(id => {
+                if(id == race._id) found = true
+            });
+            if (found) {
+            cardButton.innerHTML = "Avregistrera"
+            cardButton.classList.add('btn-danger')
+            cardButton.addEventListener('click', function() { 
+                unRegisterForRace(race._id)
+            });
+            } else {
+                cardButton.innerHTML = "Registrera"
+                cardButton.classList.add('btn-primary')
+                cardButton.addEventListener('click', function() { 
+                    registerForRace(race._id)
+                });
+            }
+            cardBody.appendChild(cardButton)
+        }
+
+        
 
         cards.appendChild(card)
     }
 </script>
-
-<style>
-    .card {
-        width: 100% !important;
-    }
-    .cardButton {
-        /* position: absolute !important;
-        top: 36.5% !important;
-        right: 20px !important; */
-    }
-</style>
