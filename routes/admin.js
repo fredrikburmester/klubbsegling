@@ -25,6 +25,7 @@ const Club = require("../models/club");
 const Serie = require("../models/serie");
 const Handicap = require("../models/handicap");
 const Checkpoint = require("../models/checkpoint");
+const { json } = require('body-parser');
 
 router.get('/', ensureAuthenticated, async (req, res) => {
 
@@ -285,9 +286,9 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
 
             var newObj = null
             partRacesJson = JSON.parse(partRaces)
-            partRacesJson.forEach(race => {
-                race['participants'] = []
-            });
+            // partRacesJson.forEach(race => {
+            //     race['participants'] = []
+            // });
  
             Race.findOne({
                 name: name
@@ -311,7 +312,8 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
                         partRaces: partRacesJson,
                         serie: serie,
                         images: imagefilenames,
-                        pdf: pdffilenames
+                        pdf: pdffilenames,
+                        participants: [],
                     });
                     newObj.save()
                     console.log(newObj)
