@@ -17,14 +17,96 @@ router.get('/register', (req,res)=>{
     res.render('register');
 })
 
+router.post('/register-for-race/:id', async (req,res)=>{
+    id = req.params.id
+    if(req.user === undefined) {
+        res.status(401).end();
+    } else {
+
+        found = await Race.findById(id)
+
+        if (found) {
+            Race.updateOne(
+                { _id: id },
+                { $addToSet: { participants: {id: req.user.id, name: req.user.name}} },
+                function(err, result) {
+                  if (err) {
+                    res.status(500).end();
+                  } else {
+                    User.updateOne(
+                        { _id: req.user._id },
+                        { $addToSet: { races: id } },
+                        function(err, result) {
+                          if (err) {
+                            res.status(500).end();
+                          } else {
+                            res.status(200).end();
+                          }
+                        }
+                      );
+                  }
+                }
+              );
+        } else {
+            console.log("not found")
+            res.status(404).end();
+        }
+    }
+})
+
+router.post('/un-register-for-race/:id', async (req,res)=>{
+    id = req.params.id
+    console.log(id)
+    if(req.user === undefined) {
+        res.status(401).end();
+    } else {
+
+        found = await Race.findById(id)
+
+        if (found) {
+            await Race.findByIdAndUpdate(
+                { _id: id },
+                { $pull: { "participants": { id: req.user.id } } },
+                function(err, result) {
+                  if (err) {
+                    console.log("Update race: ",err)
+                    res.status(500).end();
+                  } else {
+                    console.log("participant removed")
+                  }
+                }
+            );
+
+            await User.findByIdAndUpdate(
+                { _id: req.user.id },
+                { $pull: { "races": id } },
+                function(err, result) {
+                    if (err) {
+                        console.log("Update user: ", err)
+                        res.status(500).end();
+                    } else {
+                        console.log("user race removed")
+                        res.status(200).end();
+                    }
+                }
+            );
+        } else {
+            console.log("not found")
+            res.status(404).end();
+        }
+    }
+})
+
 router.get('/results', async (req,res)=>{
     const series = await Serie.find()
     const clubs = await Club.find()
+    const races = await Race.find()
 
     res.render('results',{
         user: req.user,
         clubs: clubs,
-        series: series
+        series: series,
+        races: races
     });
 })
 
