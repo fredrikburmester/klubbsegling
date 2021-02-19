@@ -25,6 +25,10 @@ const RaceSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
+    participants: {
+        type: Array,
+        required: false
+    },
     org: {
         type: String,
         required: true
