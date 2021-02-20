@@ -47,13 +47,10 @@
 </style>
 
 <div class="container">
-    <div class="py-5">
+    <div class="pt-5">
         <h1 class="title">
             Hem
         </h1>
-        <h2 class="subtitle">
-            Välkommen <%= user.name %></p>
-        </h2>
         <hr>
     </div>
     <% if(races.length == 0) { %>
@@ -63,6 +60,15 @@
         </div>
     <% } else { %>
         <% for (var i = 0; i < races.length;  i++ ) { %>
+            <% if(i == 0) { %>
+                <h2 class="subtitle">
+                    Nästa tävling!
+                </h2>
+            <% } else if (i == 1) { %>
+                <h2 class="subtitle">
+                    Framtida tävlingar!
+                </h2>
+            <% } %>
             <div class="my-5">
                 <div class="card shadow bg-white rounded border-0">
                     <div class="card-grid">
@@ -75,10 +81,10 @@
                         </div>
                         <div class="card-body card-item-2">
                             <h5 class="card-title"><%= races[i].name %></h5>
-                            <p style="color: darkgray;">Start: 2021-04-12</p>
-                            <p style="color: darkgray;">Klubb: <a href="/dashboard"><%= races[i].club %></a></p>
+                            <p style="color: darkgray;">Start: <%= races[i].startDate.getFullYear() + "-" + (races[i].startDate.getMonth()+1) + "-" + races[i].startDate.getDate() %></p>
+                            <p style="color: darkgray;">Klubb: <a href="/"><%= races[i].club %></a></p>
                             <p class="card-text"><%= races[i].description %></p>
-                            <p style="color: darkgray;">Kontakt: <a href="/dashboard">Fredrik Burmester</a></p>
+                            <p style="color: darkgray;">Kontakt: <a href="/">Fredrik Burmester</a></p>
                         </div>
                     </div>
                 </div>

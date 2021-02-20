@@ -218,9 +218,16 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
                 } 
             } 
 
-            function checkDate(date) {
+            function checkStartDate(date) {
                 if(!date) {
                     return '2000-01-01'
+                } else {
+                    return date
+                } 
+            }
+            function checkEndDate(date) {
+                if(!date) {
+                    return '2030-01-01'
                 } else {
                     return date
                 } 
@@ -289,6 +296,9 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
             // partRacesJson.forEach(race => {
             //     race['participants'] = []
             // });
+
+            endDateTemp = new Date(endDate)
+            endDateTemp.setHours( 23,59,59,0 );
  
             Race.findOne({
                 name: name
@@ -297,7 +307,7 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
                     newObj = new Race({
                         name: name,
                         startDate: new Date(startDate),
-                        endDate: new Date(endDate),
+                        endDate: endDateTemp,
                         club: club,
                         org: org,
                         tel: tel,
@@ -307,8 +317,8 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
                         boatBehind: fixBool(boatBehind),
                         requireRegistration: fixBool(requireRegistration),
                         handicap: handicap,
-                        regOpen: new Date(checkDate(regOpen)),
-                        regClose: new Date(checkDate(regClose)),
+                        regOpen: new Date(checkStartDate(regOpen)),
+                        regClose: new Date(checkEndDate(regClose)),
                         partRaces: partRacesJson,
                         serie: serie,
                         images: imagefilenames,
