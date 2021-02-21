@@ -42,8 +42,24 @@ function unRegisterForRace(id, el) {
     }).catch(error => console.error(error));
 }
 
+function getClubById(id) {
+    axios.get('/club/' + id)
+    .then(function (response) {
+        if(response.status == 200) {
+            console.log(response.data.response)
+            return response.data.response.club.name
+        }
+    })
+    .catch(function (error) {
+        // handle error
+        console.log(error);
+    })
+    .then(function () {
+        // always executed
+    });
+}
+
 function registerForRace(id, el) {
-    console.log(el)
     axios.post('/register-for-race/' + id, {
         headers: {
 
