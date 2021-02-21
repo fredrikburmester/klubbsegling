@@ -5,95 +5,217 @@
         display: grid !important;
         grid-template-columns: 1fr;
         grid-template-rows: auto;
-        justify-items: center;
+        padding: 0;
+        margin: 0;
     }
+
     #about {
         display: grid !important;
         justify-items: center;
+    }
+
+    #info {
+        background-color: white;
+        /* -webkit-box-shadow: 0px -2px 24px -2px rgba(0,0,0,0.42);
+        -moz-box-shadow: 0px -2px 24px -2px rgba(0,0,0,0.42);
+        box-shadow: 0px -2px 24px -2px rgba(0,0,0,0.42); */
+        /* -webkit-box-shadow: 0px -4px 8px 0px rgba(0, 0, 0, 0.19);
+        -moz-box-shadow: 0px -4px 8px 0px rgba(0, 0, 0, 0.19);
+        box-shadow: 0px -4px 8px 0px rgba(0, 0, 0, 0.19); */
+        width: 100vw;
+        height: 100%;
+        padding: 1em;
     }
 </style>
 
 <div class="profile container my-5 ">
 
     <div class="" id="about">
-        <img class="rounded-circle" src="/static/img/logo.png" alt="" width="100px" height="100px">
-        <p><%= user.name %></p>
+
+        <img class="rounded-circle shadow" src="/static/img/logo.png" alt="" width="100px" height="100px">
+        <h3 class="mt-4"><%= user.name %></h3>
+        <h5 class="mb-5" style="color:gray"><%= club %></h5>
+        <div id="info" class="mb-4">
+            <h4>Info</h4>
+            <p>Epost: <%= user.email %></p>
+            <p id="tel"></p>
+            <p>Kontot skapat: <%= user.date.getFullYear() + "/" + (user.date.getMonth()+1) + "/" + user.date.getDate() %>
+            </p>
+            <div class="my-5" id="boats">
+                <h4>Båtar</h4>
+                <div id="cards" class="cards mt-4">
+                   
+                </div>
+            </div>
+            <div id="addboat">
+                <div class="my-5" id="add-boat">
+                    <h2>Lägg till båt</h2>
+                    <p>Sök efter mätbrev:</p>
+                    <form class="mb-4 form">
+                        <div class="form-group">
+                            <label class="mb-2" for="ref">Mätbrev</label><br>
+                            <select class="selectpicker dropdown form-control" data-container="body" name="ref" data-live-search="true" data-dropup-auto="false">
+                                <% for (var i = 0; i < boats.length;  i++ ) { %>
+                                    <option data-tokens="<%= boats[i].Ref %>" value="<%= boats[i].Ref %>"><%= boats[i].Ref %></option>
+                                <% } %>
+                            </select><br>
+                            <button type="button" class="btn btn-primary my-4" onclick="addBoat(this.form)">Lägg till från mätbrev</button>
+                        </div>  
+                    </form>
+                    <hr>
+                    <p><em>Har du inte ett mätbrev än? Lägg till båten manuellt:</em></p>
+                    <form clsss="mb-4" action="" method="">
+                        <label class="mb-2" for="name">Båtnamn</label><br>
+                        <input type="text" class="form-control mb-2" id="name">
+
+                        <label class="mb-2" for="type">Båttyp</label><br>
+                        <select class="selectpicker" name="ref" data-live-search="true">
+                            <% for (var i = 0; i < stdBoats.length;  i++ ) { %>
+                                <option data-tokens="<%= stdBoats[i].Båttyp %>" value="<%= stdBoats[i].Båttyp %>"><%= stdBoats[i].Båttyp %></option>
+                            <% } %>
+                        </select><br>
+                        <button type="button" class="btn btn-primary my-4" onclick="addNewBoat(this.form)" disabled>Lägg till utan mätbrev</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-          <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Hem</a>
-        </li>
-        <li class="nav-item" role="presentation">
-          <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Båtar</a>
-        </li>
-        <li class="nav-item" role="presentation">
-          <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Lägg till båt</a>
-        </li>
-      </ul>
-      <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-            <div class="my-5">
-                About
-            </div>
-        </div>
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-            <div class="my-5" id="boats">
-                <h2>Dina båtar</h2>
-        
-                <% for (var i = 0; i < user.boats.length;  i++ ) { %>
-                <form action="/users/removeboat" method="post">
-                    <p><%= user.boats[i].name %></p>
-                    <input name="remove_name" type="hidden" value="<%= user.boats[i]._id %>">
-                    <input type="submit" value="Ta bort båt">
-                </form>
-                <button onclick="removeBoat('<%= user.boats[i].name %>')">Ta bort med AJAX</button>
-                <% } %>
 
-                
-            </div>
-        </div>
-        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-            <div class="my-5" id="add-boat">
-                <h2>Lägg till båt</h2>
-                <p>Sök efter mätbrev:</p>
-                <form action="/users/addboat" method="post">
-                    <label for="ref">Mätbrev</label>
-                    <select class="browser-default" name="ref" id="ref">
-                        <% for (var i = 0; i < boats.length;  i++ ) { %>
-                        <option value="<%= boats[i].Ref %>"><%= boats[i].Ref %></option>
-                        <% } %>
-                    </select>
-        
-                    <input type="submit" value="Lägg till båt">
-                </form>
-                <p>Har du inte ett mätbrev än? Lägg till båten manuellt:</p>
-                <form action="/users/addstdboat" method="post">
-                    <label for="name">Båtnamn</label>
-                    <input type="text" name="name" id="name">
-        
-                    <label for="type">Båttyp</label>
-                    <select name="type" id="type">
-                        <% for (var i = 0; i < stdBoats.length;  i++ ) { %>
-                        <option value="<%= stdBoats[i].Båttyp %>"><%= stdBoats[i].Båttyp %></option>
-                        <% } %>
-                    </select>
-        
-                    <input type="submit" value="Lägg til båt">
-                </form>
-            </div>
-        </div>
-      </div>
-      
-    
 
-    
+
+
 </div>
-
 <script>
-    function removeBoat(name) {
-        fetch('/json/handicap/600477498fb295647d2a05a3')
-        .then(response => response.json())
-        .then(data => console.log(data));
+    var user = '<%- JSON.stringify(user) %>'
+    var userBoats = '<%- JSON.stringify(userBoats) %>'
+    
+    user = JSON.parse(user);
+    userBoats = JSON.parse(userBoats);
+
+    tel.innerHTML = "Telefon: " + user.tel
+    console.log(user)
+
+    function removeBoat(id, el) {
+        axios.post('/users/removeboat/' + id , {
+        })
+        .then(function (response) {
+            if(response.data.response.success == true) {
+                //userBoats = userBoats.filter(e => e !== id); // will return ['A', 'C']
+                userBoats = userBoats.filter(function(el) { return el._id != id; }); 
+                window.createNotification({
+                closeOnClick: false,
+                displayCloseButton: false,
+                positionClass: "nfc-bottom-right",
+                showDuration: 5000,
+                theme: 'warning'
+                })({
+                    title: "Båten borttagen!",
+                    message: ""
+                });
+                updateBoatCards()
+            }
+            
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     }
+
+    function addBoat(form) {
+        axios.post('/users/addboat/' + form.ref.value, {
+        })
+        .then(function (response) {
+            if(response.data.response.success == true) {
+                var boat = response.data.response.boat
+                userBoats.push(boat)
+                window.createNotification({
+                closeOnClick: false,
+                displayCloseButton: false,
+                positionClass: "nfc-bottom-right",
+                showDuration: 5000,
+                theme: 'success'
+                })({
+                    title: boat.name + " tillagd!",
+                    message: "Båten är nu tillagd"
+                });
+                updateBoatCards()
+            } else {
+                window.createNotification({
+                closeOnClick: false,
+                displayCloseButton: false,
+                positionClass: "nfc-bottom-right",
+                showDuration: 5000,
+                theme: 'error'
+                })({
+                    title: "Någonting gick snett!",
+                    message: response.data.response.errors[0].msg
+                });
+            }
+        })
+        .catch(function (error) {
+            console.log("Error: ",error);
+        });
+    }
+
+    function updateBoatCards() {
+        cards.innerHTML = ""
+        if(userBoats.length == 0) {
+            cards.innerHTML = "Inga båtar här inte..."
+        } 
+        userBoats.forEach(boat => {
+            createBoatCard(boat)
+        });
+    }
+
+    window.onload = function() {
+        updateBoatCards()
+    };
+    
+    function createBoatCard(boat) {
+        var cards = document.getElementById('cards')
+
+        var card = document.createElement('div')
+        card.classList.add('card')
+        card.classList.add('mb-4')
+        card.classList.add('shadow')
+        card.classList.add('border-0')
+
+        var cardBody = document.createElement('div')
+        cardBody.classList.add('card-body')
+
+        var cardTitle = document.createElement('h5')
+        cardTitle.classList.add('card-title')
+        cardTitle.innerHTML = boat.name
+
+        var cardSubtitle = document.createElement('h6')
+        cardSubtitle.classList.add('card-subtitle')
+        cardSubtitle.classList.add('mb-2')
+        cardSubtitle.classList.add('text-muted')
+        cardSubtitle.innerHTML = boat.boatType
+
+        var cardText = document.createElement('p')
+        cardText.classList.add('card-text')
+        cardText.innerText = "SRS: " + boat.srs
+
+        var cardButton = document.createElement('button')
+        cardButton.classList.add('btn')
+        cardButton.classList.add('cardButton')
+
+        card.appendChild(cardBody)
+        cardBody.appendChild(cardTitle)
+        cardBody.appendChild(cardSubtitle)
+        cardBody.appendChild(cardText)
+
+        cardButton.innerHTML = "Ta bort"
+        cardButton.classList.add('btn-danger')
+        cardButton.addEventListener('click', function handler() {
+            removeBoat(boat._id, this)
+            this.removeEventListener('click', handler);
+        });
+        cardBody.appendChild(cardButton)
+
+        cards.appendChild(card)
+    }
+
 </script>
