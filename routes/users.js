@@ -2,52 +2,111 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const passport = require('passport');
-const {ensureAuthenticated} = require('../config/auth') 
+const {
+    ensureAuthenticated
+} = require('../config/auth')
 
 const User = require("../models/user");
 const Boat = require("../models/boat");
 
 //add boat
-router.post('/addboat', ensureAuthenticated, (req, res) => {
-    const {
-        ref
-    } = req.body;
+router.post('/addboat/:ref', ensureAuthenticated, async (req, res) => {
+    var ref = req.params.ref
+
+    let errors = []
+    var success = false
 
     // TODO: Check and get existing boat from JSON file
     var srsCertMono = require('../public/srs-cert-mono.json');
 
     function getBoat(ref) {
         return srsCertMono.filter(
-            function(srsCertMono){ return srsCertMono.Ref == ref }
+            function (srsCertMono) {
+                return srsCertMono.Ref == ref
+            }
         );
     }
-      
+
     var boat = getBoat(ref)[0];
-    if(boat) {
-        console.log("found")
-    } else {
-        console.log("not found")
-    }
-    // TODO: Check length of boat name >0
 
-    const newBoat = new Boat({
-        name: boat.Båtnamn,
-        type: boat.Båttyp,
-        addedBy: req.user._id
+    
+
+    await Boat.findOne({
+        srsId: boat.SRSID
+    }, function (err, obj) {
+        if (obj == null) {
+            const newBoat = new Boat({
+                name: boat.Båtnamn,
+                addedBy: req.user._id,
+                owner: boat.ÄgareNamn,
+                boatType: boat.Båttyp,
+                nationality: boat.Nationality,
+                sailNr: boat.Segelnr,
+                srs: boat.SRS,
+                srsU: boat.SRSUtanUndanvindsegel,
+                srsSh: boat.SRSShorthanded,
+                srsShu: boat.SRSShorthandedUtanUndanvindssegel,
+                srsSp: boat.SRSMedSpinnaker,
+                srsId: boat.SRSID
+            });
+
+            var newBoatId = newBoat._id
+
+            newBoat.save()
+
+            User.findOneAndUpdate({
+                    _id: req.user.id
+                }, {
+                    $push: {
+                        boats: newBoatId.toString()
+                    }
+                }, {
+                    useFindAndModify: false
+                })
+                .then(function () {
+
+                })
+            res.status(200)
+            success = true
+            boat = newBoat
+        } else {
+            req.user.boats.forEach(id => {
+                if(id == obj._id) {
+                    success = false
+                    errors.push({
+                        msg: "Du har redan den här båten!"
+                    })
+                    res.status(200)
+                }
+            });
+            if(errors.length == 0) {
+                User.findOneAndUpdate({
+                        _id: req.user.id
+                    }, {
+                        $push: {
+                            boats: obj._id.toString()
+                        }
+                    }, {
+                        useFindAndModify: false
+                    })
+                    .then(function (err) {
+                    
+                    })
+                success = true
+                boat = obj
+                res.status(200)
+            }
+        }
     });
-
-    // newBoat.save() // do not save the boat yet
-
-    console.log("req.user", req.user)
-
-    User.findOneAndUpdate({_id: req.user.id}, {
-        $push: {
-            boats: newBoat
-    }}, {useFindAndModify: false})
-    .then(function(){
-        console.log("Added boat", newBoat)
-        res.redirect('/profile');
-    })
+    response = {
+        errors: errors,
+        boat: boat,
+        success: success
+    }
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({
+        response
+    }));
 
 })
 
@@ -62,17 +121,13 @@ router.post('/addstdboat', ensureAuthenticated, (req, res) => {
 
     function getBoat(type) {
         return srsCertMono.filter(
-            function(srsCertMono){ return srsCertMono.Båttyp == type }
+            function (srsCertMono) {
+                return srsCertMono.Båttyp == type
+            }
         );
     }
-      
-    var boat = getBoat(type)[0];
 
-    // if(boat) {
-    //     console.log("found")
-    // } else {
-    //     console.log("not found")
-    // }
+    var boat = getBoat(type)[0];
 
     const newBoat = new Boat({
         name: name,
@@ -82,34 +137,55 @@ router.post('/addstdboat', ensureAuthenticated, (req, res) => {
 
     // newBoat.save() // do not save the boat yet
 
-    console.log("req.user", req.user)
-
-    User.findOneAndUpdate({_id: req.user.id}, {
-        $push: {
-            boats: newBoat
-    }}, {useFindAndModify: false})
-    .then(function(){
-        console.log("Added boat", newBoat)
-        res.redirect('/profile');
-    })
+    User.findOneAndUpdate({
+            _id: req.user.id
+        }, {
+            $push: {
+                boats: newBoat
+            }
+        }, {
+            useFindAndModify: false
+        })
+        .then(function () {
+            res.redirect('/profile');
+        })
 
 })
 
 //remove boat
-router.post('/removeboat', ensureAuthenticated, (req, res) => {
-    const {
-        remove_name
-    } = req.body;
+router.post('/removeboat/:id', ensureAuthenticated, (req, res) => {
+    id = req.params.id
 
-    User.updateOne({_id: req.user._id}, {
-        $pull: {
-            boats: { name: remove_name }
-        }
-    }, { safe: true })
-    .then(function(){
-        res.redirect('/profile');
-    })
+    let errors = []
 
+    User.findByIdAndUpdate({
+            _id: req.user._id
+        }, {
+            $pull: {
+                boats: id
+            }
+        }, {
+            safe: true
+        })
+        .then(function (err) {
+            if (err.nModified == 0) {
+                response = {
+                    errors: errors,
+                    success: false
+                }
+                res.status(400)
+            } else {
+                response = {
+                    errors: errors,
+                    success: true
+                }
+                res.status(200)
+            }
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                response
+            }));
+        })
 })
 
 //login handle
@@ -137,7 +213,6 @@ router.post('/register', (req, res) => {
         password
     } = req.body;
     let errors = [];
-    console.log(' Name ' + name + ' email :' + email + ' pass:' + password);
     if (!name || !email || !password) {
         errors.push({
             msg: "Please fill in all fields"
@@ -162,7 +237,6 @@ router.post('/register', (req, res) => {
         User.findOne({
             email: email
         }).exec((err, user) => {
-            console.log(user);
             if (user) {
                 errors.push({
                     msg: 'email already registered'
@@ -190,7 +264,6 @@ router.post('/register', (req, res) => {
                             //save user
                             newUser.save()
                                 .then((value) => {
-                                    console.log(value)
                                     req.flash('success_msg', 'You have now registered!');
                                     res.redirect('/users/login');
                                 })
