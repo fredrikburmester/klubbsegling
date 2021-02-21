@@ -5,6 +5,7 @@ const {
 } = require('../config/auth')
 const User = require("../models/user");
 const Race = require("../models/race");
+const Boat = require("../models/boat");
 const Club = require("../models/club");
 const Serie = require("../models/serie");
 const Handicap = require("../models/handicap");
@@ -129,7 +130,6 @@ router.post('/register-for-race/:id', async (req, res) => {
 
 router.post('/un-register-for-race/:id', async (req, res) => {
     id = req.params.id
-    console.log(id)
     if (req.user === undefined) {
         res.status(401).end();
     } else {
@@ -148,10 +148,8 @@ router.post('/un-register-for-race/:id', async (req, res) => {
                 },
                 function (err, result) {
                     if (err) {
-                        console.log("Update race: ", err)
                         res.status(500).end();
                     } else {
-                        console.log("participant removed")
                     }
                 }
             );
@@ -165,16 +163,13 @@ router.post('/un-register-for-race/:id', async (req, res) => {
                 },
                 function (err, result) {
                     if (err) {
-                        console.log("Update user: ", err)
                         res.status(500).end();
                     } else {
-                        console.log("user race removed")
                         res.status(200).end();
                     }
                 }
             );
         } else {
-            console.log("not found")
             res.status(404).end();
         }
     }
@@ -193,23 +188,37 @@ router.get('/results', async (req, res) => {
     });
 })
 
-// // Logged in pages
-// router.get('/dashboard',ensureAuthenticated, async (req,res)=>{
-
-
-// })
-
 router.get('/profile', ensureAuthenticated, async (req, res) => {
 
     // const person = await User.findOne({_id: req.user._id}).lean()
-    // console.log(req.user)
 
     var srsCertMono = require('../public/srs-cert-mono.json');
     var srsStdMono = require('../public/srs-std-mono.json');
 
+    const clubs = await Club.find()
+
+    var club = ""
+    clubs.forEach(obj => {
+        if(req.user.club == obj.id) {
+            club = obj.name
+        }
+    });
+
+    userBoats = []
+
+    var boats = await Boat.find()
+
+    for(let i = 0; i < req.user.boats.length; i++) {
+        for(let j = 0; j < boats.length; j++) {
+            if(req.user.boats[i] == boats[j]._id) {
+                userBoats.push(boats[j])
+            }
+        }  
+    }
 
     res.render('profile', {
         user: req.user,
+        club: club,
         boats: srsCertMono,
         stdBoats: srsStdMono
     });
