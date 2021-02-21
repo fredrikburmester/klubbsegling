@@ -49,7 +49,7 @@ const BoatSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    nationallity: {
+    nationality: {
         type: String,
         required: false
     },
