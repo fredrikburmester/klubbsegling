@@ -210,7 +210,6 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
     } else if (req.params.obj == 'race') {
         if (name && startDate && endDate && club && org && handicap && serie) {
             function fixBool(check) {
-                console.log(check)
                 if (check == "on" || check == "true" || check == true) {
                     return true;
                 } else {
@@ -326,7 +325,6 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
                         participants: [],
                     });
                     newObj.save()
-                    console.log(newObj)
                 } else {
                     errors.push({
                         msg: "Ett race med samma namn finns redan"
@@ -437,7 +435,6 @@ router.post('/create/race/:temp(template|new)', ensureAuthenticated, async (req,
         adminLevel: 5
     })
 
-    console.log(orgs)
     
     if (req.params.temp == 'template') {
         useTemplate = true
