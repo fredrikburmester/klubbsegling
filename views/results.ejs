@@ -1,7 +1,7 @@
 <%- include ('./partials/navbar') %>
 
 <div class="container my-2">
-    <h1 class="mt-5">Resultat</h1>
+    <h1 class="mt-5">Resultat</h1><hr>
     <form id="filterForm">
         <div class="row mb-2">
             <div class="col">
@@ -204,6 +204,13 @@
             }
             cardBody.appendChild(cardButton)
         }
+
+        var cardButton = document.createElement('a')
+        cardButton.classList.add('mx-4')
+        cardButton.href = "/race/" + race._id
+        cardButton.innerText = "Visa mer"
+        cardBody.appendChild(cardButton)
+
         cards.appendChild(card)
     }
 </script>
