@@ -1,0 +1,42 @@
+<%- include ('./partials/navbar') %>
+<%- include ('./partials/messages') %>
+
+<style>
+    #image {
+        width: 100vw;
+        height: 300px;
+        background-image: url(/static/img/banner.jpg);
+        background-size: cover;
+        object-fit: contain;
+        z-index: 0;
+    }
+    #title {
+        position: absolute;
+        z-index: 1;
+        transform: translateX(calc(50vw - 150px));
+        text-align: center;
+        width: 300px;
+        background-color: white;
+        margin-top: -30px;
+        padding: 10px
+    }
+</style>
+
+<img id="image"></img>
+<h1 id="title" class="shadow"><%= race.name %></h1>
+
+<div class="container my-5">
+    <h2 class="mt-4">Info</h2><hr>
+    <h4><%= race.club %></h4>
+    <p>Datum:
+        <%= race.startDate.getFullYear() + "/" + (race.startDate.getMonth()+1) + "/" + race.startDate.getDate() %> - 
+        <%= race.endDate.getFullYear() + "/" + (race.endDate.getMonth()+1) + "/" + race.endDate.getDate() %>
+    </p>
+    <p><b>Beskrivning:</b></p>
+    <p><%= race.description %></p>
+
+    <h2 class="mt-4">Kontaktuppgifter</h2><hr>
+    <p>Namn: <%= race.org %></p>
+    <p>Telefon: <%= race.tel %></p>
+    <p>Epost: <%= race.email %></p>
+</div>
