@@ -1,7 +1,7 @@
-<div class="container-sm mx-auto my-2">
+<div class="container mx-auto mt-4">
 	<div class="py-2" style="text-align: center;">
-		<img src="/static/img/logo.png" alt="" width="100px" height="100px">
-		<h1> Klubbsegling</h1>
+		<img src="/static/img/logo.ico" alt="" width="100px" height="100px">
+		<h2 id="test"> Klubbsegling</h2>
 		<p>Välkommen till sveriges coolaste seglingsapp med resultat från klubbseglingar runt om i landet</p>
 	</div>
 
@@ -11,7 +11,6 @@
 			<label for="exampleInputEmail1" class="form-label">Epost</label>
 			<input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp"
 				value="fredrik.burmester@gmail.com">
-			<div id="emailHelp" class="form-text">Din epost</div>
 		</div>
 		<div class="mb-3">
 			<label for="password" class="form-label">Lösenord</label>
@@ -22,8 +21,14 @@
 		</div>
 	</form>
 
-	<div class="py-2">
-		<p>Om du inte vill registrera dig, kolla in information och resultat från klubbarna</p>
-		<a href="/results">Se resultat</a>
+	<div class="py-3">
+		<p>Om du inte vill registrera dig, kolla in resultat och tävlingar!</p>
+		<a href="/results" class="btn btn-primary">Se resultat</a>
 	</div>
 </div>
+
+<script>
+	window.onload = function() {
+        unHide()
+	}
+</script>

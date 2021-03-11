@@ -52,6 +52,6 @@ app.use('/',require('./routes/index'));
 app.use('/users',require('./routes/users'));
 app.use('/race',require('./routes/race'));
 app.use('/admin',require('./routes/admin'));
-app.use('/json',require('./routes/object'));
+app.use('/api',require('./routes/api'));
  
 app.listen(3000);  

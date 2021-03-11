@@ -1,104 +1,68 @@
 <%- include ('./partials/navbar') %>
 
-<style>
-    .card-grid {
-        display: grid !important;
-        grid-template-columns: auto 1fr;
-    }
+<div id="container" class="container">
+    <div class="">
+        <h2 class="subtitle">Mina Seglingar</h2>
+        <div class="stats">
+            <div class="stat rounded-circle shadow"
+                onclick="this.style.backgroundColor ='lightgray'; location.href = '/results?available=true'">
+                <p id="stat1" class="stat-number"></p>
+                <p class="stat-text">Tillgängliga</p>
+            </div>
+            <div class="stat rounded-circle shadow"
+                onclick="this.style.backgroundColor ='lightgray'; location.href = '/results?registered=true'">
+                <p id="stat2" class="stat-number"></p>
+                <p class="stat-text">Anmäld</p>
+            </div>
+            <div class="stat rounded-circle shadow"
+                onclick="this.style.backgroundColor ='lightgray'; location.href = '/results?sailed=true'">
+                <p id="stat3" class="stat-number"></p>
+                <p class="stat-text">Seglade</p>
+            </div>
+        </div>
 
-    #card-item-1>img {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-    }
-
-    #card-item-1 {
-        display: grid;
-        margin-left: 22px;
-        margin-top: 22px;
-        margin-right: 0.5rem;
-        width: 100px;
-        height: 100px;
-        grid-column: span 1;
-    }
-
-    #card-item-2 {
-        grid-column: span 1;
-    }
-
-    @media only screen and (max-width: 575px) {
-        .card-grid {
-            display: grid !important;
-            grid-template-columns: 1fr;
-            grid-template-rows: auto 1fr;
-        }
-
-        #card-item-1>img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        #card-item-1 {
-            display: grid;
-            margin-left: 15px;
-            margin-top: 15px;
-            padding-right: 30px;
-            margin-right: 0.5rem;
-            width: 100%;
-            height: 200px;
-            grid-column: span 1;
-        }
-    }
-</style>
-
-<div class="container">
-    <div class="pt-5">
-        <h1 class="title">
-            Hem
-        </h1>
         <hr>
     </div>
-    <% if(races.length == 0) { %>
-    <div>
-        <h4>Hmm, här va det tomt...</h4>
-        <p>Här kan du se framtida tävlingar samt registrera dig!</p>
+    <div id="cards" class="cards mb-5 mt-4" onload="loadCards()">
+
     </div>
-    <% } else { %>
-    <% for (var i = 0; i < races.length;  i++ ) { %>
-    <% if(i == 0) { %>
-    <h2 class="subtitle">
-        Nästa tävling!
-    </h2>
-    <% } else if (i == 1) { %>
-    <h2 class="subtitle">
-        Framtida tävlingar!
-    </h2>
-    <% } %>
-    <div class="my-5">
-        <div class="card shadow bg-white rounded border-0">
-            <div class="card-grid">
-                <div id="card-item-1">
-                    <% if (races[i].images.length > 0) { %>
-                    <img src="/static/uploads/races/<%= races[i].name %>/images/<%= races[i].images[0] %>" alt="...">
-                    <% } else { %>
-                    <img src="/static/img/logo.png %>" alt="...">
-                    <% } %>
-                </div>
-                <div class="card-body card-item-2">
-                    <h5 class="card-title"><%= races[i].name %></h5>
-                    <p style="color: darkgray;">Start:
-                        <%= races[i].startDate.getFullYear() + "-" + (races[i].startDate.getMonth()+1) + "-" + races[i].startDate.getDate() %>
-                    </p>
-                    <p style="color: darkgray;">Klubb: <a href="/"><%= races[i].club %></a></p>
-                    <p class="card-text"><%= races[i].description %></p>
-                    <p style="color: darkgray;">Kontakt: <a href="/">Fredrik Burmester</a></p>
-                    <a href="/race/<%= races[i]._id %>">Visa mer</a>
-                </div>
-                
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="chooseBoat" tabindex="-1" aria-labelledby="chooseBoatLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="chooseBoatLabel">Välj båt</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Du har fler än 1 båt på ditt konto. Välj vilken båt du vill registrera för den här tävlingen.</p>
+                <form>
+                    <input id="raceIdForModal" type="hidden" value="">
+                    <input id="buttontochange" type="hidden" value="">
+                    <select name="boatselect" class="form-control selectpicker my-4" id="boatselect">
+                        <option value=""></option>
+                    </select>
+                    <br>
+                    <button
+                        onclick="registerForRace(this.form.raceIdForModal.value,this.form.boatselect.value,this.form.buttontochange.value)"
+                        type="button" class="btn btn-primary" data-dismiss="modal">Registrera</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Stäng</button>
+                </form>
             </div>
         </div>
     </div>
-    <% } %>
-    <% }%>
 </div>
+
+<script>
+    (async function () {
+        await getUserData().then(response => {
+            loadDashboardRaces()
+            loadStats()
+            unHide()
+        })
+    })();
+</script>

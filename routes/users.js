@@ -29,8 +29,6 @@ router.post('/addboat/:ref', ensureAuthenticated, async (req, res) => {
 
     var boat = getBoat(ref)[0];
 
-    
-
     await Boat.findOne({
         srsId: boat.SRSID
     }, function (err, obj) {
@@ -67,47 +65,62 @@ router.post('/addboat/:ref', ensureAuthenticated, async (req, res) => {
 
                 })
             res.status(200)
-            success = true
-            boat = newBoat
+            response = {
+                boat: newBoat,
+                success: "true",
+                errors: errors
+            }
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+                response
+            }));
         } else {
             req.user.boats.forEach(id => {
                 if(id == obj._id) {
-                    success = false
                     errors.push({
                         msg: "Du har redan den här båten!"
                     })
+                    response = {
+                        boat: [],
+                        success: "false",
+                        errors: errors
+                    }
                     res.status(200)
+                    res.setHeader('Content-Type', 'application/json');
+                    res.end(JSON.stringify({
+                        response
+                    }));
+                    return
                 }
             });
+
             if(errors.length == 0) {
                 User.findOneAndUpdate({
-                        _id: req.user.id
-                    }, {
-                        $push: {
-                            boats: obj._id.toString()
-                        }
-                    }, {
-                        useFindAndModify: false
-                    })
-                    .then(function (err) {
-                    
-                    })
-                success = true
-                boat = obj
-                res.status(200)
+                    _id: req.user.id
+                }, {
+                    $push: {
+                        boats: obj._id.toString()
+                    }
+                }, {
+                    useFindAndModify: false
+                }).then(response => {
+                    response = {
+                        boat: obj,
+                        success: "true",
+                        errors: errors
+                    }
+    
+                    res.status(200)
+                    res.setHeader('Content-Type', 'application/json');
+                    res.end(JSON.stringify({
+                        response
+                    }));
+                }).catch(err => {
+                    console.log(err)
+                })
             }
         }
     });
-    response = {
-        errors: errors,
-        boat: boat,
-        success: success
-    }
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify({
-        response
-    }));
-
 })
 
 router.post('/addstdboat', ensureAuthenticated, (req, res) => {
@@ -199,10 +212,11 @@ router.get('/register', (req, res) => {
 
 //register handle
 router.post('/login', (req, res, next) => {
+    console.log("login")
     passport.authenticate('local', {
         successRedirect: '/',
         failureRedirect: '/users/login',
-        failureFlash: true
+        failureFlash: true,
     })(req, res, next)
 })
 //register post handle
@@ -264,7 +278,7 @@ router.post('/register', (req, res) => {
                             //save user
                             newUser.save()
                                 .then((value) => {
-                                    req.flash('success_msg', 'You have now registered!');
+                                    req.flash('success_msg', 'Du är registrerad!');
                                     res.redirect('/users/login');
                                 })
                                 .catch(value => console.log(value));
@@ -277,7 +291,7 @@ router.post('/register', (req, res) => {
 //logout
 router.get('/logout', (req, res) => {
     req.logout();
-    req.flash('success_msg', 'Now logged out');
+    req.flash('success_msg', 'Du är utloggad!');
     res.redirect('/users/login');
 })
 

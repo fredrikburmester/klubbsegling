@@ -16,11 +16,23 @@ router.get('/:id', async (req, res) => {
 
     const race = await Race.findById(id);
 
-    console.log(race)
-
     res.render('race', {
         user: req.user,
         race: race,
+        title: "Tävling"
+    });
+})
+
+router.get('/report/:id', async (req, res) => {
+    var id = req.params.id
+
+    const race = await Race.findById(id);
+
+    res.render('report', {
+        user: req.user,
+        race: race,
+        checkpoints: [],
+        title: "Rapportera"
     });
 })
 

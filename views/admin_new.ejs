@@ -1,0 +1,32 @@
+<%- include ('./partials/navbar') %>
+<%- include ('./partials/messages') %>
+
+<div class="container">
+    <h2 class="subtitle">Statistik</h2>
+    <div class="stats">
+        <div class="stat rounded-circle shadow">
+            <p id="stat1" class="stat-number">2</p>
+            <p class="stat-text">Användare</p>
+        </div>
+        <div class="stat rounded-circle shadow">
+            <p id="stat2" class="stat-number">2</p>
+            <p class="stat-text">Admins</p>
+        </div>
+        <div class="stat rounded-circle shadow">
+            <p id="stat3" class="stat-number">3</p>
+            <p class="stat-text">Klubbar</p>
+        </div>
+    </div>
+    <hr>
+    <h2 class="subtitle">Verktyg</h2>
+    <a href="/admin/races" class="btn btn-primary mb-3" style="width: 100%">Tävlingar</a>
+    <a href="/admin/clubs" class="btn btn-primary mb-3 disabled" style="width: 100%">Klubbar</a>
+    <a href="/admin/series" class="btn btn-primary mb-3 disabled" style="width: 100%">Serier</a>
+    <a href="/admin/handicaps" class="btn btn-primary mb-3 disabled" style="width: 100%">Handikappsystem</a>
+    <a href="/admin/checkpoints" class="btn btn-primary mb-3 disabled" style="width: 100%">Rundningspunkter</a>
+</div>
+<script>
+    window.onload = async function() {
+        unHide()
+    }
+</script>
