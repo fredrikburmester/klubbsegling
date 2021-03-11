@@ -145,7 +145,7 @@ router.post('/add/:obj(serie|handicap|race|club|checkpoint)?', ensureAuthenticat
 
                 logo = req.files.logo;
 
-                filename = name + '-' + logo.name
+                let filename = name + '-' + logo.name
 
                 // Use the mv() method to place the file somewhere on your server
                 logo.mv('./public/uploads/logos/' + shortName + '/' + filename, function (err) {
