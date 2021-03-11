@@ -13,10 +13,10 @@ router.use(fileUpload({
     createParentPath: true
 }));
 
-router.use(bodyParser.urlencoded({
-    extended: false
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
 }));
-router.use(bodyParser.json());
 
 const User = require("../models/user");
 const Boat = require("../models/boat");
