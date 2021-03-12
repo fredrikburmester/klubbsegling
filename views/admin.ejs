@@ -89,12 +89,12 @@
     </div>
 
     <h1 class="pb-2">Lägg till tävling</h1>
-    <button class="btn btn-primary mb-4 mr-4" type="button" data-bs-toggle="collapse" data-bs-target="#addrace"
-        aria-expanded="false" aria-controls="collapseExample">
+    <button class="btn btn-primary mb-4 mr-4" type="button" data-bs-toggle="collapse" href="#addrace"
+        aria-expanded="false">
         Se mer
     </button>
     <div class="collapse" id="addrace">
-        <div class="mb-4">
+        <div class="mb-4 card card-body">
             <form action="/admin/create/race/template" method="POST">
                 <div class="mb-2">
                     <label for="name" class="form-label">Välj bland tidigare tävlingar</label>

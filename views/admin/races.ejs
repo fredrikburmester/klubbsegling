@@ -1,0 +1,18 @@
+<%- include ('../partials/navbar') %>
+<%- include ('../partials/messages') %>
+
+<div class="container">
+    <p class="subtitle">Se alla</p>
+    <a href="/results" class="btn btn-secondary mb-3" style="width: 100%">Se alla tävlingar</a>
+    <hr>
+    <p class="subtitle">Tävlingar</p>
+    <form action="/admin/create/race" method="POST">
+        <input id="hidden-input" type="hidden">
+        <input type="submit" class="btn btn-primary" style="width: 100%" value="Skapa ny"></input>
+    </form>
+</div>
+<script>
+    window.onload = async function() {
+        unHide()
+    }
+</script>

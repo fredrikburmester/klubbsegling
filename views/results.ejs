@@ -1,216 +1,103 @@
 <%- include ('./partials/navbar') %>
 
-<div class="container my-2">
-    <h1 class="mt-5">Resultat</h1><hr>
-    <form id="filterForm">
-        <div class="row mb-2">
+<div id="slider"></div>
+
+<div class="container">
+    <form class="mt-4" id="filterForm">
+        <div class="form-group row">
             <div class="col">
-                <label for="year" class="form-label">År</label>
-                <select name="year" class="form-select">
-                    <option selected value="all">Alla</option>
+                <label>År</label>
+                <select id="formyear" name="year" class="form-control selectpicker">
+                    <option value="">Alla</option>
                     <option value="2020">2020</option>
-                    <option value="2021">2021</option>
+                    <option selected value="2021">2021</option>
                 </select>
             </div>
             <div class="col">
-                <label for="club" class="form-label">Klubb</label>
-                <select name="club" class="form-select">
-                    <option selected value="all">Alla</option>
+                <label>Klubb</label>
+                <select id="formclub" name="club" class="form-control selectpicker">
+                    <option value="">Alla</option>
                     <% for (var i = 0; i < clubs.length;  i++ ) { %>
-                    <option value="<%= clubs[i]._id %>"><%= clubs[i].shortName %></option>
+                    <% if (user) { %>
+                    <% if (clubs[i].name == user.club[0]) { %>
+                    <option selected value="<%= clubs[i].name %>"><%= clubs[i].shortName %></option>
+                    <% i++ %>
+                    <% } %>
+                    <% } %>
+                    <option value="<%= clubs[i].name %>"><%= clubs[i].shortName %></option>
                     <% } %>
                 </select>
             </div>
         </div>
-        <div class="row">
+
+        <div class="form-group row">
             <div class="col">
-                <label for="serie" class="form-label">Serie</label>
-                <select name="serie" class="form-select">
-                    <option selected value="all">Alla</option>
+                <label>Serie</label>
+                <select id="formserie" name="serie" class="form-control selectpicker">
+                    <option selected value="">Alla</option>
                     <% for (var i = 0; i < series.length;  i++ ) { %>
-                    <option value="<%= series[i]._id %>"><%= series[i].name %></option>
+                    <option value="<%= series[i].name %>"><%= series[i].name %></option>
                     <% } %>
                 </select>
             </div>
             <div class="col">
-                <label for="sort" class="form-label">Sortera efter</label>
-                <select name="sort" id="sort" class="form-select">
+
+                <label>Sortera efter</label>
+                <select name="sort" id="sort" class="form-control selectpicker">
                     <option value="name">Namn</option>
-                    <option value="date-new">Datum (nyast först)</option>
+                    <option selected value="date-new">Datum (nyast först)</option>
                     <option value="date-old">Datum (älst först)</option>
                     <option value="club">Klubb</option>
                     <option value="serie">Serie</option>
                 </select>
             </div>
         </div>
-        <button type="button" class="btn btn-primary my-4"
-            onclick="getRaces(this.form.year.value, this.form.club.value, this.form.serie.value)">Hämta
+        <button type="button" class="btn btn-primary my-4" onclick="loadResultsRaces()">Hämta
             tävlingar</button>
-        <button type="button" class="btn btn-primary my-4" onclick="sortRaces(sort.value)">Sortera</button>
+        <button type="button" class="btn btn-primary my-4"
+            onclick="sortRaces(sort.value); printResultCards()">Sortera</button>
     </form>
-    <div class="mt-2 mb-4" style="cursor: pointer;">
+
+    <div class="mt-4 mb-4" style="cursor: pointer;">
         <a id="showFilterButton" style="color: gray;" class="hidden"
             onclick="filterForm.classList.remove('hidden'); showFilterButton.classList.add('hidden')">Visa filter</a>
     </div>
 
-    <div id="table">
-        <div class="spinner-border hidden" role="status" id="spinner">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-        <div id="error">
 
-        </div>
-        <div id="cards">
+    <div id="error">
 
-        </div>
+    </div>
+    <div id="cards">
+
     </div>
 </div>
 
-<style>
-    .spinner-border {
-        width: 30px;
-        height: 30px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    td {
-        white-space: nowrap;
-        height: 200px
-    }
-</style>
-
 <script>
-    var year;
-    var club;
-    var serie;
-    var races = []
-
-    var user = '<%- JSON.stringify(user) %>'
-    if (user.length > 0) {
-        var user = JSON.parse('<%- JSON.stringify(user) %>')
-    } else {
-        user = null
-    }
-
-    function printCards() {
-        cards.innerHTML = ""
-        for (let i = 0; i < races.length; i = i + 1) {
-            createRaceCard(races[i])
-        }
-    }
-
-    function sortRaces(type) {
-        if (type == 'date-new') {
-            races.sort((a, b) => (a.startDate < b.startDate) ? 1 : -1)
-        } else if (type == 'date-old') {
-            races.sort((a, b) => (a.startDate > b.startDate) ? 1 : -1)
-        } else if (type == 'name') {
-            races.sort((a, b) => (a.name > b.name) ? 1 : -1)
-        } else if (type == 'club') {
-            races.sort((a, b) => (a.club > b.club) ? 1 : -1)
-        } else if (type == 'serie') {
-            races.sort((a, b) => (a.serie < b.serie) ? 1 : -1)
-        }
-        printCards()
-    }
-
-    async function getRaces(year = 'all', club = 'all', serie = 'all') {
-        showFilterButton.classList.remove("hidden")
-        filterForm.classList.add("hidden")
-
-        year = year
-        club = club
-        serie = serie
-
-        document.getElementById('spinner').classList.remove('hidden')
-
-        const response = await axios.get(`/json/races/${year}/${club}/${serie}`)
-        races = response.data.object
-
-        if (races.length > 0) {
-            document.getElementById('spinner').classList.add('hidden')
-            document.getElementById('error').innerText = ""
-            document.getElementById('cards').innerHTML = ""
-
-            sortRaces(sort.value)
-            printCards()
-        } else {
-            document.getElementById('cards').innerHTML = ""
-            document.getElementById('error').innerText = "Inga matchande tävlingar!"
-            document.getElementById('spinner').classList.add('hidden')
-        }
-    }
-
-    function createRaceCard(race) {
-        var cards = document.getElementById('cards')
-
-        var card = document.createElement('div')
-        card.classList.add('card')
-        card.classList.add('mb-4')
-        card.classList.add('shadow')
-        card.classList.add('border-0')
-
-        var cardBody = document.createElement('div')
-        cardBody.classList.add('card-body')
-
-        var cardTitle = document.createElement('h5')
-        cardTitle.classList.add('card-title')
-        cardTitle.innerHTML = `${race.name} - ${race.club}`
-
-        var cardSubtitle = document.createElement('h6')
-        cardSubtitle.classList.add('card-subtitle')
-        cardSubtitle.classList.add('mb-2')
-        cardSubtitle.classList.add('text-muted')
-        cardSubtitle.innerHTML =
-            `<em>${race.startDate.split("T")[0].replace('-', "/")} - ${race.endDate.split("T")[0].replace('-', "/")}</em>`
-
-        var cardText = document.createElement('p')
-        cardText.classList.add('card-text')
-        cardText.innerText = race.description
-
-        var cardButton = document.createElement('button')
-        cardButton.classList.add('btn')
-        cardButton.classList.add('cardButton')
-
-        card.appendChild(cardBody)
-        cardBody.appendChild(cardTitle)
-        cardBody.appendChild(cardSubtitle)
-        cardBody.appendChild(cardText)
-
-        if (user) {
-            found = false
-            user.races.forEach(id => {
-                if (id == race._id) found = true
-            });
-            if (found) {
-                cardButton.innerHTML = "Avregistrera"
-                cardButton.classList.add('btn-danger')
-                cardButton.addEventListener('click', function handler() {
-                    unRegisterForRace(race._id, this)
-                    this.removeEventListener('click', handler);
-                });
+    (async function () {
+        await getUserData().then(response => {
+            unHide()
+            if (USER !== null) {
+                loadResultsRaces()
             } else {
-                cardButton.innerHTML = "Registrera"
-                cardButton.classList.add('btn-primary')
-                cardButton.addEventListener('click', function handler() {
-                    registerForRace(race._id, this)
-                    this.removeEventListener('click', handler);
-                });
+                loadResultsRaces()
             }
-            cardBody.appendChild(cardButton)
+        })
+    })();
+
+    var bar = new ProgressBar.Line(slider, {
+        strokeWidth: 10,
+        easing: 'easeInOut',
+        duration: 1500,
+        color: '#FFEA82',
+        trailColor: '#fff',
+        trailWidth: 0,
+        svgStyle: {
+            width: '100%',
+            height: '100%'
         }
+    });
 
-        var cardButton = document.createElement('a')
-        cardButton.classList.add('mx-4')
-        cardButton.href = "/race/" + race._id
-        cardButton.innerText = "Visa mer"
-        cardBody.appendChild(cardButton)
-
-        cards.appendChild(card)
-    }
+    var registered = '<%- JSON.stringify(registered) %>'
+    var available = '<%- JSON.stringify(available) %>'
+    var sailed = '<%- JSON.stringify(sailed) %>'
 </script>

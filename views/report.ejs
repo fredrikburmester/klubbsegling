@@ -1,0 +1,34 @@
+<%- include ('./partials/navbar') %>
+
+<script>
+    var checkpoints = '<%- JSON.stringify(checkpoints) %>'
+    checkpoints = JSON.parse(checkpoints)
+</script>
+
+<div class="container">
+    <p class="subtitle"><%= race.name %></p>
+    <form>
+        <div class="form-group">
+            <label for="start">Start tid</label>
+            <input type="time" class="form-control" name="start" id="start">
+        </div>
+        <% for(let i = 0; i < checkpoints.length; i++) { %>
+            <div class="form-group">
+                <label for="checkpoint-<%= i %>"><%= checkpoints[i].name %></label>
+                <input type="time" class="form-control" name="checkpoint-<%= i %>" id="checkpoint-<%= i %>">
+            </div>
+        <% } %>
+        <div class="form-group">
+            <label for="end">Målgång</label>
+            <input type="time" class="form-control" name="end" id="end">
+        </div>
+        <input type="button" class="btn btn-danger my-5" style="width: 100%" value="Rapportera slutgiltig tid">
+    </form>
+
+</div>
+
+<script>
+    window.onload = async function() {
+        unHide()
+    }
+</script>

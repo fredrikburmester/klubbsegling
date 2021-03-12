@@ -1,0 +1,282 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    font-size: 14px;
+}
+
+.title,
+.subtitle {
+    color: rgb(61, 61, 61);
+}
+
+.title {
+    font-size: 3em;
+    font-weight: bold;
+}
+
+.container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin-bottom: 150px;
+    margin-top: 20px
+}
+
+.subtitle {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.hideFade {
+    opacity: 0;
+    animation: hide 0.4s ease;
+}
+
+.hidden {
+    display: none;
+}
+
+hr {
+    color: rgb(175, 175, 175);
+    margin: 30px 0 30px 0;
+}
+
+.stat {
+    cursor: pointer;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+}
+
+.load {
+    opacity: 0;
+
+    -webkit-transition: opacity 0.3s ease-in;
+    -moz-transition: opacity 0.3s ease-in;
+    -ms-transition: opacity 0.3s ease-in;
+    -o-transition: opacity 0.3s ease-in;
+    transition: opacity 0.3s ease-in;
+}
+
+.loaded {
+    opacity: 1;
+}
+
+.stat {
+    height: 90px;
+    width: 90px;
+    position: relative;
+}
+
+.stats {
+    display: flex;
+    flex-direction: row;
+    flex-grow: inherit;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 60px;
+    margin-top: 20px;
+
+}
+
+.stat>.stat-text {
+    position: relative;
+    top: 100px;
+    font-size: 12px;
+    text-align: center;
+}
+
+#stat1,
+#stat2,
+#stat3 {
+    left: 37px
+}
+
+.stat>.stat-number {
+    position: absolute;
+    text-align: center;
+    font-size: 30px;
+    top: 23px;
+
+    color: #2b80ff;
+}
+
+.card {
+    border-radius: 10px !important;
+    animation: slide-up 0.4s ease;
+}
+
+.card-body {
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-bottom: 15px;
+}
+
+#race-name {
+    font-weight: bold;
+    font-size: 1.4em;
+    margin: 0 0 10px 0;
+    padding: 0;
+    color: rgb(49, 49, 49);
+}
+
+.nfc-bottom-right,
+.ncf-container {
+    margin-bottom: 57px !important;
+}
+
+@keyframes slide-up {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+@keyframes hide {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+#slider {
+    position: fixed;
+    top: 49px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    z-index: 99;
+}
+
+.profile {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+}
+
+#about {
+    display: grid !important;
+    justify-items: center;
+}
+
+#info {
+    background-color: white;
+    /* -webkit-box-shadow: 0px -2px 24px -2px rgba(0,0,0,0.42);
+    -moz-box-shadow: 0px -2px 24px -2px rgba(0,0,0,0.42);
+    box-shadow: 0px -2px 24px -2px rgba(0,0,0,0.42); */
+    /* -webkit-box-shadow: 0px -4px 8px 0px rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0px -4px 8px 0px rgba(0, 0, 0, 0.19);
+    box-shadow: 0px -4px 8px 0px rgba(0, 0, 0, 0.19); */
+    width: 100%;
+    height: 100%;
+}
+
+#removeBoatButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: red;
+}
+
+#removeCrewMemberButton {
+    color: red;
+}
+
+.dropdown {
+    /* width: 100% !important; */
+    display: block !important;
+    margin-bottom: 10px !important;
+}
+.crewmember {
+    margin-bottom: 7.5px;
+    margin-top: 7.5px;
+}
+
+.navbar {
+    -webkit-box-shadow: 0px 0px 17px 0px rgba(0, 0, 0, 0.45);
+    -moz-box-shadow: 0px 0px 17px 0px rgba(0, 0, 0, 0.45);
+    box-shadow: 0px 0px 17px 0px rgba(0, 0, 0, 0.45);
+}
+
+.navbar-collapse {
+    justify-content: flex-end;
+}
+
+#location {
+    font-size: 25px;
+    margin: 0;
+    padding: 0;
+    font-weight: 600;
+    color: rgb(63, 63, 63);
+    margin-right: auto;
+    margin-top: 4px;
+}
+
+.nav-item {
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.navbar-nav>li>.btn {
+    margin-left: 10px;
+}
+
+@media only screen and (min-width: 1000px) {
+    .navbar-brand img {
+        margin-left: 20px;
+    }
+    .container {
+        margin-top: 100px;
+        padding: 0 8em 0 8em;
+    }
+}
+
+/* For small screen (tablet) */
+@media only screen and (max-width: 1000px) {
+    html {
+        width: 100%;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    body {
+        width: 100%;
+        -webkit-overflow-scrolling: touch;
+        height: 100%;
+        position: fixed;
+        overflow-y: scroll;
+    }
+
+    .navbar-nav>li>.btn {
+        margin-bottom: 10px;
+        margin-left: 0;
+        width: 150px
+    }
+}
+
+/* For super small screens (phone)  */
+@media only screen and (min-width: 575px) {
+    .stats {
+        justify-content: start;
+    }
+
+    .stat {
+        margin-right: 20px
+    }
+}

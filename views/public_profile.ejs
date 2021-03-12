@@ -1,0 +1,120 @@
+<%- include ('./partials/navbar') %>
+
+<style>
+    .profile {
+        display: grid !important;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    #about {
+        display: grid !important;
+        justify-items: center;
+    }
+
+    #info {
+        background-color: white;
+        /* -webkit-box-shadow: 0px -2px 24px -2px rgba(0,0,0,0.42);
+        -moz-box-shadow: 0px -2px 24px -2px rgba(0,0,0,0.42);
+        box-shadow: 0px -2px 24px -2px rgba(0,0,0,0.42); */
+        /* -webkit-box-shadow: 0px -4px 8px 0px rgba(0, 0, 0, 0.19);
+        -moz-box-shadow: 0px -4px 8px 0px rgba(0, 0, 0, 0.19);
+        box-shadow: 0px -4px 8px 0px rgba(0, 0, 0, 0.19); */
+        width: 100%;
+        height: 100%;
+    }
+    #removeBoatButton {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: red;
+    }
+    #removeCrewMemberButton {
+        color: red;
+    }
+    .dropdown {
+        width: 50% !important;
+    }
+</style>
+
+<div class="profile container">
+    <div id="about">
+        <img class="rounded-circle shadow" src="/static/img/logo.png" alt="" width="100px" height="100px">
+        <h3 class="mt-4" id="name"><%= public.name %></h3>
+        <h5 class="mb-5" style="color:gray" id="club"><%= club %></h5>
+        <div id="info" class="mb-4">
+            <h4>Info</h4>
+            <p id="email">Epost: <%= public.email %></p>
+            <p id="tel">Telefon: <%= public.tel %></p>
+            <p id="created"></p>
+            <div class="my-5" id="boats">
+                <h4>Båtar</h4>
+                <div id="cards" class="cards mt-4">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+var userBoats = '<%- JSON.stringify(userBoats) %>'
+userBoats = JSON.parse(userBoats)
+
+userBoats.forEach(boat => {
+    createBoatCard(boat)
+});
+
+function createBoatCard(boat) {
+        var cards = document.getElementById('cards')
+
+        var card = document.createElement('div')
+        card.classList.add('card')
+        card.classList.add('mb-4')
+        card.classList.add('shadow')
+        card.classList.add('border-0')
+
+        var cardBody = document.createElement('div')
+        cardBody.classList.add('card-body')
+
+        var cardTitle = document.createElement('h5')
+        cardTitle.classList.add('card-title')
+        cardTitle.innerHTML = boat.name
+
+        var cardSubtitle = document.createElement('h6')
+        cardSubtitle.classList.add('card-subtitle')
+        cardSubtitle.classList.add('mb-2')
+        cardSubtitle.classList.add('text-muted')
+        cardSubtitle.innerHTML = boat.boatType
+
+        var cardText = document.createElement('p')
+        cardText.classList.add('card-text')
+        cardText.innerText = "SRS: " + boat.srs
+
+        var crewDiv = document.createElement('div')
+        crewDiv.classList.add('mb-2')
+        var addSailorText = document.createElement('p')
+        addSailorText.style.marginBottom = "0"
+        addSailorText.innerHTML = "Gastar: <br>"
+        crewDiv.appendChild(addSailorText)
+        boat.crew.forEach(member => {
+            let crewMember = document.createElement('a')
+            crewMember.innerHTML = `${member.name}<br>`
+            crewMember.href = `/user/${member.id}`
+            crewDiv.appendChild(crewMember)
+        });
+
+        card.appendChild(cardBody)
+        cardBody.appendChild(cardTitle)
+        cardBody.appendChild(cardSubtitle)
+        cardBody.appendChild(cardText)
+        cardBody.appendChild(crewDiv)
+
+        cards.appendChild(card)
+    }
+
+    window.onload = async function() {
+        unHide()
+    }
+</script>

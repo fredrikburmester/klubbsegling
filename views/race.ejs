@@ -2,41 +2,124 @@
 <%- include ('./partials/messages') %>
 
 <style>
+    #image-container {
+        display: flex;
+        justify-content: space-evenly;
+        flex-direction: column;
+        align-items: center;
+    }
+
     #image {
-        width: 100vw;
-        height: 300px;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        justify-content: center;
         background-image: url(/static/img/banner.jpg);
         background-size: cover;
         object-fit: contain;
         z-index: 0;
     }
+
     #title {
-        position: absolute;
-        z-index: 1;
-        transform: translateX(calc(50vw - 150px));
         text-align: center;
-        width: 300px;
-        background-color: white;
-        margin-top: -30px;
-        padding: 10px
+        font-size: 1.5em;
+    }
+
+    #adminButtons {
+        display: flex;
+        justify-content: center;
+    }
+
+    #adminButtons>button {
+        margin: 10px;
+        width: 100px
     }
 </style>
 
-<img id="image"></img>
-<h1 id="title" class="shadow"><%= race.name %></h1>
 
-<div class="container my-5">
-    <h2 class="mt-4">Info</h2><hr>
+
+<div class="container">
+    <div id="image-container">
+        <img id="image" class="shadow my-4"></img>
+        <h1 id="title" class="mb-4"><%= race.name %></h1>
+    </div>
+    <% if (user) { %>
+    <% if(user.adminLevel > 3 ) { %>
+    <div id="adminButtons">
+        <form action="/admin/create/race" method="post" class="" style="margin:10px;">
+            <input type="hidden" name="edit" value="true">
+            <input type="hidden" name="id" value="<%= race._id %>">
+            <button class="btn btn-warning" type="submit">Redigera</button>
+        </form>
+        
+        <button class="btn btn-danger" onclick="removeRace('<%= race._id %>')">Ta bort</button>
+    </div>
+    <% } %>
+    <% } %>
+    <h2 class="mt-4">Info</h2>
+    <hr>
     <h4><%= race.club %></h4>
     <p>Datum:
-        <%= race.startDate.getFullYear() + "/" + (race.startDate.getMonth()+1) + "/" + race.startDate.getDate() %> - 
+        <%= race.startDate.getFullYear() + "/" + (race.startDate.getMonth()+1) + "/" + race.startDate.getDate() %> -
         <%= race.endDate.getFullYear() + "/" + (race.endDate.getMonth()+1) + "/" + race.endDate.getDate() %>
     </p>
     <p><b>Beskrivning:</b></p>
     <p><%= race.description %></p>
 
-    <h2 class="mt-4">Kontaktuppgifter</h2><hr>
+    <h2 class="mt-4">Kontaktuppgifter</h2>
+    <hr>
     <p>Namn: <%= race.org %></p>
     <p>Telefon: <%= race.tel %></p>
     <p>Epost: <%= race.email %></p>
 </div>
+
+<script>
+    window.onload = async function () {
+        unHide()
+    }
+
+    function removeRace(id) {
+        axios.post('/admin/remove/race', {
+                id: id
+            })
+            .then(function (response) {
+                if(response.status == 200) {
+                    window.createNotification({
+                        closeOnClick: false,
+                        displayCloseButton: false,
+                        positionClass: "nfc-bottom-right",
+                        showDuration: 6000,
+                        theme: 'success'
+                    })({
+                        title: "Tävlingen borttagen",
+                        message: "Var god lämna sidan."
+                    });
+                } else if (response.status == 203) {
+                    window.createNotification({
+                        closeOnClick: false,
+                        displayCloseButton: false,
+                        positionClass: "nfc-bottom-right",
+                        showDuration: 6000,
+                        theme: 'error'
+                    })({
+                        title: "Tyvärr!",
+                        message: "Tävlingen kunde inte tas bort."
+                    });
+                } else {
+                    window.createNotification({
+                        closeOnClick: false,
+                        displayCloseButton: false,
+                        positionClass: "nfc-bottom-right",
+                        showDuration: 6000,
+                        theme: 'error'
+                    })({
+                        title: "Server error",
+                        message: "Någonting gick fel, var god kontakta server admin"
+                    });
+                } 
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+</script>

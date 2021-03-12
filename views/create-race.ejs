@@ -1,92 +1,93 @@
 <%- include ('./partials/navbar') %>
-
 <style>
     .hidden-form-element {
         visibility: hidden;
         display: none
     }
 
-    .spinner-border {
-        position: fixed;
-        top: 0;
-        left: 0;
-        margin-left: 47%;
-        margin-top: 40vh;
+    .container {
+        padding-bottom: 200px
     }
 </style>
 
-<div class="spinner-border" role="status" id="spinner">
-    <span class="visually-hidden">Loading...</span>
-</div>
+<div class="container my-5" id="content">
 
-<div class="container my-5 hidden-form" id="content">
-
-    <% if (useTemplate) { %>
-    <h1 class="pb-4">Skapa tävling</h1>
+    <% if(!edit) { %>
+    <h1 class="title pb-4 mt-4">Skapa ny tävling</h1>
     <% } else { %>
-    <h1 class="pb-4">Skapa tävling from mall</h1>
+    <h1 id="title create-race-title" class="pb-4 mt-4">Redigera tävling</h1>
+    <% } %>
+    <hr>
+    <% if(!edit) { %>
+    <h4 class="my-4">Gamla tävlingar</h4>
+    <form>
+        <label>Välj en gammal tävling:</label>
+        <select onchange="updateFields(this.value)" name="oldrace" class="selectpicker form-control" id="oldraces">
+            <option value=""></option>
+        </select>
+    </form>
+    <hr>
+    <% } else { %>
+        <form style="display:none">
+            <select onchange="updateFields(this.value)" name="oldrace" class="selectpicker form-control" id="oldraces">
+                <option value=""></option>
+            </select>
+        </form>
     <% } %>
 
-    <form class="pb-5">
-        <div class="hidden-form-element form-step mb-3 step1" id="step1">
-            <label for="name" class="form-label">Tävlingens namn</label>
-            <% if (useTemplate) { %>
-            <input type="name" name="name" class="form-control" id="name" value="<%= template.name %>" required>
-            <% } else { %>
-            <input type="name" name="name" class="form-control" id="name" value="" required>
-            <% }%>
-            <div class="form-text">Klubbens namn, t.ex. Trälhavets Båtklubb</div>
+    <form class="mb-5" id="form">
+        <div class=" form-step mb-3 step1" id="step1">
+            <label for="name">Tävlingens namn</label>
+            <input type="text" name="name" class="form-control" id="name" value="" />
         </div>
-
-        <div class="hidden-form-element form-step mb-2 step1" id="step2">
-            <label for="club" class="form-label">Klubb</label>
-            <select name="club" class="form-select" aria-label="Default select example" required>
-                <% if (useTemplate) { %>
-                <option value="<%= template.club %>"><%= template.club %></option>
-                <% } else { %>
+        <div class=" form-step mb-3 step1">
+            <label for="description">Beskrivning</label>
+            <textarea class="form-control" name="description" rows="3"></textarea required>
+        </div>
+        <hr>
+        <div class=" form-step mb-2 step1" id="step2">
+            <label for="club">Klubb</label>
+            <select name="club" class="form-control selectpicker" aria-label="Default select example" required>
                 <option value=""></option>
-                <% }%>
                 <% for (var i = 0; i < clubs.length;  i++ ) { %>
                 <option value="<%= clubs[i].name %>"><%= clubs[i].name %></option>
                 <% } %>
             </select>
         </div>
-
-        <div class="hidden-form-element form-step mb-2 step1" id="step2">
-            <label for="serie" class="form-label">Serie</label>
-            <select name="serie" class="form-select" aria-label="Default select example" required>
-                <% if (useTemplate) { %>
-                <option value="<%= template.serie %>"><%= template.serie %></option>
-                <% } else { %>
+        <div class=" form-step mb-2 step1" id="step2">
+            <label for="serie">Serie</label>
+            <select name="serie" class="form-control selectpicker" aria-label="Default select example" required>
                 <option value=""></option>
-                <% }%>
                 <% for (var i = 0; i < series.length;  i++ ) { %>
                 <option value="<%= series[i].name %>"><%= series[i].name %></option>
                 <% } %>
             </select>
         </div>
-
-
-        <div class="hidden-form-element form-step mb-3 step2" id="step3">
-            <label for="startdate" class="form-label">Startdatum</label>
-            <% if (useTemplate) { %>
-            <input type="date" name="startdate" class="form-control" value="<%= template.startDate %>" required>
-            <% } else { %>
+        <div class=" form-step mb-2 pb-2 step1" >
+            <label for="handicap" >Handikappsystem</label>
+            <select name="handicap" class="form-control selectpicker" aria-label="Default select example">
+                <option value="" selected="selected"></option>
+                <% for (var i = 0; i < handicaps.length;  i++ ) { %>
+                <option value="<%= handicaps[i].name %>"><%= handicaps[i].name %></option>
+                <%}%>
+            </select>
+        </div>
+        <hr>
+        <div class=" form-step mb-3 step2" id="step3" style="width:75%">
+            <label for="startdate">Startdatum</label>
             <input type="date" name="startdate" class="form-control" value="" required>
-            <% }%>
             <div class="form-text"></div>
         </div>
-
-        <div class="hidden-form-element form-step mb-3 step2" id="step4">
-            <label for="enddate" class="form-label">Slutdatum</label>
+        <div class=" form-step mb-3 step2" id="step4" style="width:75%">
+            <label for="enddate">Slutdatum</label>
             <input type="date" name="enddate" class="form-control" value="" required>
             <div class="form-text"></div>
         </div>
-
-        <div class="hidden-form-element form-step mb-2 step3" id="step5">
-            <label for="org" class="form-label">Organisatör</label>
-            <select onchange="updateOrg();" name="org" class="form-select" aria-label="Default select example" id="org"
-                required>
+        <hr>
+        <div class=" form-step mb-2 step3" id="step5">
+            <label for="org">Organisatör</label>
+            <select onchange="updateOrg();" name="org" class="form-control selectpicker"
+                aria-label="Default select example" id="org" required>
                 <option value="<%= user.name %>"><%= user.name %></option>
                 <% for (var i = 0; i < orgs.length;  i++ ) { %>
                 <% if(orgs[i].name != user.name) {%>
@@ -95,407 +96,499 @@
                 <% } %>
             </select>
         </div>
-
-        <div class="hidden-form-element form-step mb-3 step3">
-            <label for="tel" class="form-label">Telefon</label>
+        <div class=" form-step mb-3 step3">
+            <label for="tel">Telefon</label>
             <input type="tel" name="tel" class="form-control" value="" id="tel" disabled>
             <div class="form-text">T.ex. +46 72 505 06 12</div>
         </div>
-
-        <div class="hidden-form-element form-step mb-3 step3">
-            <label for="email" class="form-label">Epost</label>
+        <div class=" form-step mb-3 step3">
+            <label for="email">Epost</label>
             <input type="email" name="email" class="form-control" value="" id="email" disabled>
             <div class="form-text">T.ex. förnamn.efternamn@gmail.com</div>
         </div>
-
-        <div class="hidden-form-element form-step mb-3 step3">
-            <label for="pdf" class="form-label">PDF</label>
-            <input name="pdf" class="form-control" type="file" id="pdf" multiple>
+        <hr>
+        <div class=" form-step mb-3 step3">
+            <label for="pdf">PDF</label>
+            <input name="pdf" class="form-control-file" type="file" id="pdf" multiple>
             <div class="form-text">PDF fil med information</div>
         </div>
-
-        <div class="hidden-form-element form-step mb-3 step3">
-            <label for="images" class="form-label">Bild</label>
-            <input name="images" class="form-control" type="file" id="images" multiple>
+        <div class=" form-step mb-3 step3">
+            <label for="images">Bild</label>
+            <input name="images" class="form-control-file" type="file" id="images" multiple>
             <div class="form-text">Relevant bild</div>
         </div>
-
-        <div class="hidden-form-element form-step mb-3 step1">
-            <label for="description" class="form-label">Beskrivning</label>
-            <% if (useTemplate) { %>
-            <textarea class="form-control" name="description" rows="3" value=""><%= template.description %></textarea required>
-            <% } else { %>
-                <textarea class="form-control" name="description" rows="3"></textarea required>
-            <% }%>
-                    
-        </div>
-
-        <div class="hidden-form-element form-step form-check step4 mb-4" >
-            <% if (useTemplate) { %> 
-                <input class="form-check-input" type="checkbox" id="boatInFront" name="boatInFront">
-            <% } else { %>
-                <input class="form-check-input" type="checkbox" id="boatInFront" name="boatInFront">
-            <% } %>
-            <label class="form-check-label" for="boatInFront">
-                Rapportera båt framför
-            </label>
-        </div>
-
-        <div class="hidden-form-element form-step form-check step4 mb-4" >
-            <% if (useTemplate) { %> 
-                <input class="form-check-input" type="checkbox" id="boatBehind" name="boatBehind">
-            <% } else { %>
-                <input class="form-check-input" type="checkbox" id="boatBehind" name="boatBehind">
-            <% }%>
-            <label class="form-check-label" for="boatBehind">
-                Rapportera båt bakom
-            </label>
-        </div>
-
-        <div class="hidden-form-element form-step form-check step4 mb-4" >
-            <% if (useTemplate) { %> 
-                <input class="form-check-input" type="checkbox" id="requireRegistration" name="requireRegistration">
-            <% } else { %>
-                <input class="form-check-input" type="checkbox" id="requireRegistration" name="requireRegistration">
-            <% }%>
+        <hr>
+        <div class=" form-step form-check step4 mb-4" >
+            <input class="form-check-input" type="checkbox" id="requireRegistration" name="requireRegistration">
             <label class="form-check-label" for="requireRegistration">
-                Krav på registrering
+            Krav på registrering
             </label>
         </div>
-        
-        <div class="hidden-form-element form-step mb-3 step4" id="regOpen-element">
-            <label for="regOpen" class="form-label">Registrering öppnar</label>
+        <div class=" form-step mb-3 step4" id="regOpen-element" style="width:75%">
+            <label for="regOpen" >Registrering öppnar</label>
             <input type="date" name="regOpen" class="form-control">
         </div>
-
-        <div class="hidden-form-element form-step mb-3 step4" id="regClose-element">
-            <label for="regClose" class="form-label">Registrering stänger</label>
+        <div class=" form-step mb-3 step4" id="regClose-element" style="width:75%">
+            <label for="regClose" >Registrering stänger</label>
             <input type="date" name="regClose" class="form-control">
         </div>
-
-        <div class="hidden-form-element form-step mb-2 pb-2 step1" >
-            <label for="handicap" class="form-label">Handikappsystem</label>
-            <select name="handicap" class="form-select" aria-label="Default select example">
-                <% if (useTemplate) { %>
-                    <option value="<%= template.handicap %>" selected="selected"><%= template.handicap %></option>
-                <% } else { %>
-                    <option value="" selected="selected"></option>
-                <% }%>
-                <% for (var i = 0; i < handicaps.length;  i++ ) { %>
-                <option value="<%= handicaps[i].name %>"><%= handicaps[i].name %></option>
-                <%}%>
-            </select>
+        <hr>
+        <div class=" form-step form-check step4 mb-4" >
+            <input class="form-check-input" type="checkbox" id="boatInFront" name="boatInFront">
+            <label class="form-check-label" for="boatInFront">
+            Rapportera båt framför
+            </label>
         </div>
-
-        <div class="hidden-form-element form-step mb-3 step5">
+        <div class=" form-step form-check step4 mb-4" >
+            <input class="form-check-input" type="checkbox" id="boatBehind" name="boatBehind">
+            <label class="form-check-label" for="boatBehind">
+            Rapportera båt bakom
+            </label>
+        </div>
+        <hr>
+        <div class=" form-step mb-3 step5">
             <div id="partraces">
                 <div id="partrace-1">
-                    <div class="my-2">
+                    <div class="my-3">
                         <h4>Delseglingar</h4>
-                        <label for="partrace-1-name" class="form-label">Delsegling 1</label>
-                        <input type="text" name="partrace-1-name" id="partrace-1-name" class="form-control" value="">
+                        <label for="partrace-1-name" >Delsegling 1</label>
+                        <input onclick="fillName(this)" type="text" name="partrace-1-name" id="partrace-1-name" class="form-control" value="">
                     </div>
-        
-                    <div class="my-2">
-                        <label for="partrace-1-startPoint" class="form-label">Startpunkt</label>
-                        <select name="partrace-1-startPoint" class="form-select" id="partrace-1-startPoint" multiple="multiple">
+                    <div class="my-3">
+                        <label for="partrace-1-startPoint" >Startpunkt</label>
+                        <select name="partrace-1-startPoint" class="form-control selectpicker" id="partrace-1-startPoint">
                             <% for (var i = 0; i < checkpoints.length;  i++ ) { %>
-                                <option value="<%= checkpoints[i].name %>"><%= checkpoints[i].name %></option>
+                            <option value="<%= checkpoints[i].name %>"><%= checkpoints[i].name %></option>
                             <%}%>
                         </select>
                     </div>
-                    
-                    <div class="my-2">
-                        <label for="partrace-1-finishPoint" class="form-label">Målpunkt</label>
-                        <select name="partrace-1-finishPoint" class="form-select" id="partrace-1-finishPoint" multiple="multiple">
+                    <div class="my-3">
+                        <label for="partrace-1-finishPoint" >Målpunkt</label>
+                        <select name="partrace-1-finishPoint" class="form-control selectpicker" id="partrace-1-finishPoint">
                             <% for (var i = 0; i < checkpoints.length;  i++ ) { %>
-                                <option value="<%= checkpoints[i].name %>"><%= checkpoints[i].name %></option>
+                            <option value="<%= checkpoints[i].name %>"><%= checkpoints[i].name %></option>
                             <%}%>
                         </select>
                     </div>
-                            
-                    <div id="partrace-1-checkpoints" class="my-2">
-        
+                    <div class="my-3">
+                        <label for="partrace-1-checkpoints" >Rundningspunkter</label>
+                        <select name="partrace-1-checkpoints" class="form-control selectpicker" id="partrace-1-checkpoints" multiple="multiple">
+                            <% for (var i = 0; i < checkpoints.length;  i++ ) { %>
+                            <option value="<%= checkpoints[i].name %>"><%= checkpoints[i].name %></option>
+                            <%}%>
+                        </select>
                     </div>
-                                
-                    <button type="button" class="btn btn-danger my-2" onclick="addCheckpointFor(1)">Lägg till rundningspunkt</button><br>
                     <hr>
                 </div>
             </div>
             <button type="button" class="btn btn-danger my-2" onclick="addPartRace()">Lägg till delsegling</button>
         </div>
-
-        <div class="hidden-form-element form-step mb-3 step6">
-            <button type="button" class="btn btn-success" id="submit-button" onclick="createRaceObject(this.form)">Lägg till</button>
-        </div>
+        <hr>
+        <% if(edit) { %> 
+            <div class=" form-step mb-3 step6">
+                <button type="button" onclick="updateRace(this.form);" class="btn btn-warning" id="submit-button" style="width: 100%">Uppdatera</button>
+            </div>
+        <% } else { %> 
+            <div class=" form-step mb-3 step6">
+                <button type="button" onclick="createRace(this.form);" class="btn btn-success" id="submit-button" style="width: 100%">Lägg till</button>
+            </div>
+        <% } %> 
     </form>
-
-    <div id="success" class="hidden-form-element">
-        <h3>Tävling skapad</h3>
-        <div id="info-success"></div>
-        <button type="button" class="btn btn-success" onclick="location.href = '/admin'">Admin panel</button>
-        <button type="button" class="btn btn-success" onclick="goToStep(1)">Skapa en till</button>
-    </div>
-
-    <div id="error" class="hidden-form-element">
-        <h3 style="color: red">Någonting gick fel</h3>
-        <div id="info-error"></div>
-        <button type="button" class="btn btn-success" onclick="window.location('/admin')">Admin panel</button>
-        <button type="button" class="btn btn-success" onclick="goToStep(1)">Försök igen</button>
-    </div>
-
-    <nav style="position: fixed; bottom: 20px;" aria-label="...">
-        <ul class="pagination">
-          <li id="previous-button" class="page-item disabled">
-            <a class="page-link" style="cursor: pointer;" onclick="previousStep()" tabindex="-1" aria-disabled="true">Previous</a>
-          </li>
-
-          <li id="next-button" class="page-item">
-            <a class="page-link" style="cursor: pointer;" onclick="nextStep()">Next</a>
-          </li>
-        </ul>
-    </nav>
-
 </div>
-
 <script>
     var orgs = <%- JSON.stringify(orgs) %>;
 </script>
-
 <script>
-let activeStep = 1
-let totalSteps = 6
-let numOfPartraces = 1
-let checkpoints = []
-
-function updateOrg() {
-    value = document.getElementById('org').value 
-    orgs.forEach(org => {
-        if(org.name == value) {
-            email.value = org.email
-            tel.value = org.tel
-        }
-    });
-}
-
-function updatePartRaceName() {
-    document.getElementById('partrace-1-name').value = document.getElementById('name').value
-}
-
-function addPartRace() {
-    numOfPartraces = numOfPartraces + 1
-
-    var partraces = document.getElementById('partraces')
-    
-    // Create part race
-    var div = document.createElement('div')
-    div.id = "partrace-" + (partraces)
-
-    var div2 = document.createElement('div')
-    div2.classList.add('my-2')
-    div2.innerHTML = "<label for='partrace-"+numOfPartraces+"-name' class='form-label'>Delsegling "+numOfPartraces+"</label><input type='text' name='partrace-"+numOfPartraces+"-name' id='partrace-"+numOfPartraces+"-name' class='form-control' value=''>"
-    div.appendChild(div2)
-
-    var div3 = document.createElement('div')
-    div3.classList.add('my-2')
-    div3.innerHTML = "<label for='partrace-"+numOfPartraces+"-startPoint' class='form-label'>Startpunkt</label><select name='partrace-"+numOfPartraces+"-startPoint' class='form-select' id='partrace-"+numOfPartraces+"-startPoint' multiple='multiple'><% for (var i = 0; i < checkpoints.length;  i++ ) { %><option value='<%= checkpoints[i].name %>'><%= checkpoints[i].name %></option><%}%></select>"
-    div.appendChild(div3)
-
-
-    var div4 = document.createElement('div')
-    div4.classList.add('my-2')
-    div4.innerHTML = "<label for='partrace-"+numOfPartraces+"-finishPoint' class='form-label'>Målpunkt</label><select name='partrace-"+numOfPartraces+"-finishPoint' class='form-select' id='partrace-"+numOfPartraces+"-finishPoint' multiple='multiple'><% for (var i = 0; i < checkpoints.length;  i++ ) { %><option value='<%= checkpoints[i].name %>'><%= checkpoints[i].name %></option><%}%></select>"
-    div.appendChild(div4)
-
-    var div5 = document.createElement('div')
-    div5.id = "partrace-" + numOfPartraces + "-checkpoints"
-    div.appendChild(div5)
-
-    var button = document.createElement('button')
-    button.type = "button"
-    button.classList.add("btn")
-    button.classList.add("btn-secondary")
-    button.classList.add("my-2")
-    button.addEventListener("click", function(e) {
-        addCheckpointFor(numOfPartraces)
-    }, false);
-    button.innerText = "Lägg till rundningspunkt"
-    div.appendChild(button)
-
-    var hr = document.createElement('hr')
-    div.appendChild(hr)
-
-    partraces.appendChild(div)
-}
-
-function addCheckpointFor(id) { // partrace-#
-    console.log(checkpoints)
-
-    if(checkpoints[id]) {
-        checkpoints[id] =  checkpoints[id] + 1
-    } else {
-        checkpoints[id] = 1
-    }
-
-    var checkpointsDiv = document.getElementById("partrace-" + id + "-checkpoints")
-
-    var div = document.createElement('div')
-    div.classList.add('my-2')
-    div.innerHTML = "<label for='partrace-" + id + "-checkpoint-name' class='form-label'>Punkt</label><select name='partrace-" + id + "-checkpoint-name' class='form-select' id='partrace-" + id + "-checkpoint-name' multiple='multiple'><% for (var i = 0; i < checkpoints.length;  i++ ) { %><option value='<%= checkpoints[i].name %>'><%= checkpoints[i].name %></option><%}%></select>"
-
-    checkpointsDiv.appendChild(div)
-}
-
-window.onload = function() {
-    var spinner = document.getElementById('spinner')
-    spinner.style.display = 'none'
-
-    var content = document.getElementById('content')
-    content.classList.remove('hidden-form-element')
-
-    var step1 = document.getElementsByClassName('step1')
-    for (let item of step1) {
-        item.classList.remove('hidden-form-element')
-    }
-
-    updateOrg()
-    updatePartRaceName()
-};
-
-// function setStepHighlight(step) {
-//     Array.from(document.getElementsByClassName('page-item')).forEach(element => {
-//         element.classList.remove('active')
-//     });
-//     document.getElementById('step' + step + '-button').classList.add('active')
-// }
-
-function goToStep(step) {
-    if(step < 1 || step > totalSteps) return
-
-    Array.from(document.getElementsByClassName('form-step')).forEach(element => {
-        element.classList.add('hidden-form-element')
-    });
-    Array.from(document.getElementsByClassName('step' + step)).forEach(element => {
-        element.classList.remove('hidden-form-element')
-    });
-
-    if(numOfPartraces == 1) {
+    var edit = <%- JSON.stringify(edit) %>;
+</script>
+<script>
+    var id = <%- JSON.stringify(id) %>;
+</script>
+<script>
+    window.onload = async function() {
+        updateOrg()
         updatePartRaceName()
-    }
-
-    activeStep = step
-
-    if (activeStep == 1) {
-        document.getElementById('previous-button').classList.add('disabled')
-        document.getElementById('next-button').classList.remove('disabled')
-    } else if (activeStep == totalSteps) {
-        document.getElementById('next-button').classList.add('disabled')
-        document.getElementById('previous-button').classList.remove('disabled')
-    } else {
-        document.getElementById('previous-button').classList.remove('disabled')
-        document.getElementById('next-button').classList.remove('disabled')
-    }
-
-    success.classList.add("hidden-form-element")
-    error.classList.add("hidden-form-element")
-
-    
-}
-
-function previousStep() {
-    if(activeStep != 1) {
-        goToStep(activeStep - 1)
-    }
-}
-
-function nextStep() {
-    if(activeStep != totalSteps) {
-        goToStep(activeStep + 1)
-    }
-}
-
-function createRaceObject(form) {
-    if (!form.email.value || !form.tel.value || !form.org.value || !form.handicap.value || !form.name.value || !form.startdate.value || !form.enddate.value || !form.club.value || !form.description.value) {
-        alert("Du missade någonting. Var vänlig gå tillbaka och fyll i alla fält.")
-    } else {
-        var partRacesArray = []
-
-        for (let i = 1; i <= numOfPartraces; i++) {
-            var partRaceName = document.getElementById('partrace-' + i + "-name").value
-            var start = document.getElementById('partrace-' + i + "-startPoint").value
-            var finish = document.getElementById('partrace-' + i + "-finishPoint").value
-            
-            var checkpointsObject = []
-            for(let j = 1; j <= checkpoints[i]; j++ ) {
-                let name = document.getElementById('partrace-' + i + "-checkpoint-name").value
-                checkpointsObject.push({name: name})
-            }
-            
-            var partRace = {
-                name: partRaceName, 
-                startPoint: start,
-                finishPoint: finish,
-                checkpoints: checkpointsObject
-            }
-
-            partRacesArray.push(partRace)
-            
+        await getOldRaces()
+        if(id !== null) {
+            $('#oldraces').selectpicker('val', id);
+            $('#oldraces').selectpicker('refresh');
+            updateFields(id)
         }
-        console.log(partRacesArray)
-        
-        var Race = new FormData()
-
-        Array.from(form.pdf.files).forEach(file => {
-            Race.append('pdf', file)
-        })
-
-        Array.from(form.images.files).forEach(file => {
-            Race.append('images', file)
-        })
-        
-        Race.append('name', form.name.value)
-        Race.append('club', form.club.value)
-        Race.append('description', form.description.value)
-        Race.append('handicap', form.handicap.value)
-        Race.append('startDate', form.startdate.value)
-        Race.append('endDate', form.enddate.value)
-        Race.append('org', form.org.value)
-        Race.append('tel', form.tel.value)
-        Race.append('email', form.email.value)
-        Race.append('boatInFront', form.boatInFront.checked)
-        Race.append('boatBehind', form.boatBehind.checked)
-        Race.append('requireRegistration', form.requireRegistration.checked)
-        Race.append('regOpen', form.regOpen.value)
-        Race.append('regClose', form.regClose.value)
-        Race.append('partRaces', JSON.stringify(partRacesArray))
-        Race.append('serie', form.serie.value)
-
-        axios.post('/admin/add/race', Race, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-        }).then(response => { 
-            var data = response.data.response
-            if(data.success == true) {
-                var p = document.createElement("p")
-                p.innerHTML = data.data.name
-                info = document.getElementById('info-success')
-                info.appendChild(p)
-                success.classList.remove("hidden-form-element")
-                //window.location = "/json/race/" + response.data.response.id;  
-            } else {
-                var p = document.createElement("p")
-                p.innerHTML = data.error
-                info = document.getElementById('info-error')
-                info.appendChild(p)
-                error.classList.remove("hidden-form-element")
-            }
-        }).catch(error => console.error(error));
+        unHide()
     }
-}
+    
+    let activeStep = 1
+    let totalSteps = 6
+    let numOfPartraces = 1
+    let checkpoints = []
+    var oldraces;
+    
+    // var step1 = document.getElementsByClassName('step1')
 
-function trimString (str) {
-    return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-}
+    // for (let item of step1) {
+    //     item.classList.remove('hidden-form-element')
+    // }
 
+    function fillName(e) {
+        if (numOfPartraces == 1) e.value = $('#name').val()
+    }
+
+    async function getOldRaces() {
+        await getRaces({}).then(response => {
+            oldraces = response
+            response.forEach(race => {
+                let option = document.createElement('option')
+                option.setAttribute('value', race._id)
+                option.innerHTML = race.name
+                document.getElementById('oldraces').appendChild(option)
+            });
+        })
+        $('#oldraces').selectpicker('refresh');
+    }
+
+    function formatDate(date) {
+        date = new Date(date)
+        let year = date.getFullYear()
+        let month = date.getMonth()
+        month = month + 1
+        if(month < 10) month = "0" + month.toString()
+        let day = date.getDate()
+        if(day < 10) day = "0" + day.toString()
+
+        return `${year}-${month}-${day}`
+    }
+
+    async function updateFields(id) {
+        oldraces.forEach(race => {
+            if(race._id == id) {
+
+                // 1. Print participants (for information only)
+
+                // 2. Check if registration closed and if so
+                    // 2.1 Be able to create groups
+                    // 2.2. Be able to move participants into groups
+
+                form.name.value = race.name
+                form.description.value = race.description
+                form.startdate.value = formatDate(race.startDate)
+                form.enddate.value = formatDate(race.endDate)
+                form.org.value = race.org
+                form.club.value = race.club
+                form.serie.value = race.serie
+                form.handicap.value = race.handicap
+                form.requireRegistration.checked = race.requireRegistration.checked
+                form.boatInFront.checked = race.boatInFront.checked
+                form.boatBehind.checked = race.boatBehind.checked
+
+                if(race.requireRegistration.checked) {
+                    form.regOpen.value = formatDate(race.regOpen)
+                    form.regClose.value = formatDate(race.regClose)
+                }
+
+                if(race.partRaces.length > 1) {
+                    for (let i = 0; i < race.partRaces.length; i++) {
+                        const p = race.partRaces[i];
+                        if(i > 0) addPartRace()
+
+                        document.getElementById(`partrace-${i+1}-name`).value = p.name
+                        document.getElementById(`partrace-${i+1}-startPoint`).value = p.startPoint
+                        document.getElementById(`partrace-${i+1}-finishPoint`).value = p.finishPoint
+
+                        if(p.checkpoints.length > 0) {
+                            let checkpoints = []
+                            p.checkpoints.forEach(c => {
+                                checkpoints.push(c)
+                            });
+                            $(`#partrace-${i+1}-checkpoints`).selectpicker('val', checkpoints);
+                        }
+                    }
+                    
+                } else {
+                    let p = race.partRaces[0]
+                    document.getElementById('partrace-1-name').value = p.name
+                    document.getElementById('partrace-1-startPoint').value = p.startPoint
+                    document.getElementById('partrace-1-finishPoint').value = p.finishPoint
+                    
+                    
+                    if(p.checkpoints.length > 0) {
+                        let checkpoints = []
+                        p.checkpoints.forEach(c => {
+                            checkpoints.push(c.name)
+                        });
+                        $('#partrace-1-checkpoints').selectpicker('val', checkpoints);
+                    }
+
+                }
+
+                $('.selectpicker').selectpicker('refresh');
+            }
+        });
+    }
+
+    function updateOrg() {
+        value = document.getElementById('org').value 
+        orgs.forEach(org => {
+            if(org.name == value) {
+                email.value = org.email
+                tel.value = org.tel
+            }
+        });
+    }
+    
+    function updatePartRaceName() {
+        document.getElementById('partrace-1-name').value = document.getElementById('name').value
+    }
+    
+    function addPartRace() {
+        numOfPartraces = numOfPartraces + 1
+    
+        var partraces = document.getElementById('partraces')
+        
+        // Create part race
+        var div = document.createElement('div')
+        div.id = "partrace-" + (partraces)
+    
+        var div2 = document.createElement('div')
+        div2.classList.add('my-3')
+        div2.innerHTML = "<label for='partrace-"+numOfPartraces+"-name' class='form-label'>Delsegling "+numOfPartraces+"</label><input type='text' name='partrace-"+numOfPartraces+"-name' id='partrace-"+numOfPartraces+"-name' class='form-control selectpicker' value=''>"
+        div.appendChild(div2)
+    
+        var div3 = document.createElement('div')
+        div3.classList.add('my-3')
+        div3.innerHTML = "<label for='partrace-"+numOfPartraces+"-startPoint' class='form-label'>Startpunkt</label><select name='partrace-"+numOfPartraces+"-startPoint' class='form-control selectpicker' id='partrace-"+numOfPartraces+"-startPoint' ><% for (var i = 0; i < checkpoints.length;  i++ ) { %><option value='<%= checkpoints[i].name %>'><%= checkpoints[i].name %></option><%}%></select>"
+        div.appendChild(div3)
+    
+    
+        var div4 = document.createElement('div')
+        div4.classList.add('my-3')
+        div4.innerHTML = "<label for='partrace-"+numOfPartraces+"-finishPoint' class='form-label'>Målpunkt</label><select name='partrace-"+numOfPartraces+"-finishPoint' class='form-control selectpicker' id='partrace-"+numOfPartraces+"-finishPoint'><% for (var i = 0; i < checkpoints.length;  i++ ) { %><option value='<%= checkpoints[i].name %>'><%= checkpoints[i].name %></option><%}%></select>"
+        div.appendChild(div4)
+
+        var div5 = document.createElement('div')
+        div5.classList.add('my-3')
+        div5.innerHTML = "<label for='partrace-"+numOfPartraces+"-checkpoints' class='form-label'>Rundningspunkter</label><select name='partrace-"+numOfPartraces+"-checkpoints' class='form-control selectpicker' id='partrace-"+numOfPartraces+"-checkpoints' multiple='multiple'><% for (var i = 0; i < checkpoints.length;  i++ ) { %><option value='<%= checkpoints[i].name %>'><%= checkpoints[i].name %></option><%}%></select>"
+        div.appendChild(div5)
+    
+        var hr = document.createElement('hr')
+        div.appendChild(hr)
+    
+        partraces.appendChild(div)
+
+        // $('.selectpicker').selectpicker('render');
+        $('.selectpicker').selectpicker('refresh');
+    }
+    
+    // function goToStep(step) {
+    //     if(step < 1 || step > totalSteps) return
+    
+    //     Array.from(document.getElementsByClassName('form-step')).forEach(element => {
+    //         element.classList.add('hidden-form-element')
+    //     });
+    //     Array.from(document.getElementsByClassName('step' + step)).forEach(element => {
+    //         element.classList.remove('hidden-form-element')
+    //     });
+    
+    //     if(numOfPartraces == 1) {
+    //         updatePartRaceName()
+    //     }
+    
+    //     activeStep = step
+    
+    //     if (activeStep == 1) {
+    //         document.getElementById('previous-button').classList.add('disabled')
+    //         document.getElementById('next-button').classList.remove('disabled')
+    //     } else if (activeStep == totalSteps) {
+    //         document.getElementById('next-button').classList.add('disabled')
+    //         document.getElementById('previous-button').classList.remove('disabled')
+    //     } else {
+    //         document.getElementById('previous-button').classList.remove('disabled')
+    //         document.getElementById('next-button').classList.remove('disabled')
+    //     }
+    
+    //     success.classList.add("hidden-form-element")
+    //     error.classList.add("hidden-form-element")
+    
+        
+    // }
+    
+    // function previousStep() {
+    //     if(activeStep != 1) {
+    //         goToStep(activeStep - 1)
+    //     }
+    // }
+    
+    // function nextStep() {
+    //     if(activeStep != totalSteps) {
+    //         goToStep(activeStep + 1)
+    //     }
+    // }
+
+    var partRacesArray = []
+    
+    function createRaceObject(form) {
+
+        let errors = []
+        if(!form.name.value)
+            errors.push({msg: "namn"})
+        else if(!form.description.value)
+            errors.push({msg: "beskrivning"})
+        else if(!form.club.value)
+            errors.push({msg: "klubb"})
+        else if(!form.serie.value)
+            errors.push({msg: "serie"})
+        else if(!form.handicap.value)
+            errors.push({msg: "handikappsystem"})
+        else if(!form.startdate.value)
+            errors.push({msg: "start datum"})
+        else if(!form.enddate.value)
+            errors.push({msg: "slut datum"})
+        else if(!form.org.value)
+            errors.push({msg: "organisatör"})
+        else if(form.requireRegistration.checked) {
+            if(!form.regOpen.value || !form.regClose.value){
+                errors.push({msg: "registrering öppnar/stänger"})
+            }
+        }
+
+        if (errors.length > 0) {
+            window.createNotification({
+                closeOnClick: false,
+                displayCloseButton: false,
+                positionClass: "nfc-bottom-right",
+                showDuration: 6000,
+                theme: 'error'
+            })({
+                title: "Du missade någonting!",
+                message: " Var god fyll i " + errors[0].msg + "."
+            });
+        } else {
+            
+    
+            for (let i = 1; i <= numOfPartraces; i++) {
+                var partRaceName = document.getElementById('partrace-' + i + "-name").value
+                var start = document.getElementById('partrace-' + i + "-startPoint").value
+                var finish = document.getElementById('partrace-' + i + "-finishPoint").value
+                
+                var checkpoints = $(`#partrace-${i}-checkpoints`).val()
+                
+                if(!partRaceName || !start || !finish) {
+                    errors.push({msg: "Var god fyll i hela delseglingen."})
+
+                    window.createNotification({
+                        closeOnClick: true,
+                        displayCloseButton: false,
+                        positionClass: "nfc-bottom-right",
+                        showDuration: 6000,
+                        theme: 'error'
+                    })({
+                        title: "Du missade någonting!",
+                        message: errors[0].msg
+                    });
+                    continue
+                } else {
+                    var partRace = {
+                        name: partRaceName, 
+                        startPoint: start,
+                        finishPoint: finish,
+                        checkpoints: checkpoints
+                    }
+                    partRacesArray.push(partRace)
+                }
+            }
+
+            if(errors.length == 0) {
+                var Race = new FormData()
+
+                Array.from(form.pdf.files).forEach(file => {
+                    Race.append('pdf', file)
+                })
+
+                Array.from(form.images.files).forEach(file => {
+                    Race.append('images', file)
+                })
+
+                Race.append('name', form.name.value)
+                Race.append('club', form.club.value)
+                Race.append('description', form.description.value)
+                Race.append('handicap', form.handicap.value)
+                Race.append('startDate', form.startdate.value)
+                Race.append('endDate', form.enddate.value)
+                Race.append('org', form.org.value)
+                Race.append('tel', form.tel.value)
+                Race.append('email', form.email.value)
+                Race.append('boatInFront', form.boatInFront.checked)
+                Race.append('boatBehind', form.boatBehind.checked)
+                Race.append('requireRegistration', form.requireRegistration.checked)
+                Race.append('regOpen', form.regOpen.value)
+                Race.append('regClose', form.regClose.value)
+                Race.append('partRaces', JSON.stringify(partRacesArray))
+                Race.append('serie', form.serie.value)
+
+                return Race
+            } 
+
+            return false
+        }
+    }
+
+    function createRace(form) {
+        var Race = createRaceObject(form)
+
+        if(Race) {
+            axios.post('/admin/add/race', Race, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(response => { 
+                var data = response.data.response
+                if(data.success == true) {
+                    window.createNotification({
+                        closeOnClick: true,
+                        displayCloseButton: false,
+                        positionClass: "nfc-bottom-right",
+                        showDuration: 6000,
+                        theme: 'success'
+                    })({
+                        title: "Tävlingen skapad",
+                        message: "Du kan nu lämna denna sida."
+                    });
+                } 
+            }).catch(error => console.error(error));
+        }
+    }
+
+
+    function updateRace(form) {
+
+        var Race = createRaceObject(form)
+
+        if(Race) {
+            axios.post('/admin/update/race', Race, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(response => { 
+                var data = response.data.response
+                if(data.success == true) {
+                    window.createNotification({
+                        closeOnClick: true,
+                        displayCloseButton: false,
+                        positionClass: "nfc-bottom-right",
+                        showDuration: 6000,
+                        theme: 'success'
+                    })({
+                        title: "Tävlingen skapad",
+                        message: "Du kan nu lämna denna sida."
+                    });
+                } 
+            }).catch(error => console.error(error));
+        }
+    }
+    
+    function trimString (str) {
+        return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    }
+    
+    
+    
 </script>
