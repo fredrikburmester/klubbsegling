@@ -13,8 +13,8 @@ router.use(fileUpload({
     createParentPath: true
 }));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({
   extended: true
 }));
 

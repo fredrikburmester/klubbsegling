@@ -12,36 +12,17 @@ router.use(bodyParser.urlencoded({
   extended: true
 }));
 
-router.post('/login', (req, res) => {
-    const {
-        username,
-        password 
-    } = req.body
-
-    User.findOne({email:username}, (err, user) => {
-        if (err) return res.status(500).send('Error on the server.');
-        if (!user) return res.status(404).send('No user found.');
-        let passwordIsValid = bcrypt.compareSync(password, user.password);
-        if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
-        let token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 // expires in 24 hours
-        });
-        // if(user.adminLevel == 5) var is_admin = true
-        res.status(200).send({ auth: true, token: token, user: user, is_admin: (user.adminLevel == 5)  });
-    })
-
-})
 
 const {
     ensureAuthenticated
 } = require('../config/auth')
-const User = require("../models/user");
+
 const Race = require("../models/race");
 const Club = require("../models/club");
 const Serie = require("../models/serie");
 const Handicap = require("../models/handicap");
 const Checkpoint = require("../models/checkpoint");
 const Boat = require("../models/boat");
-const bodyParser = require("body-parser");
 const https = require('https')
 const {
     json
@@ -64,6 +45,26 @@ router.use(bodyParser.json());
 //         res.end(JSON.stringify({ object }));
 //     }
 // });
+
+
+router.post('/login', (req, res) => {
+    const {
+        username,
+        password 
+    } = req.body
+
+    User.findOne({email:username}, (err, user) => {
+        if (err) return res.status(500).send('Error on the server.');
+        if (!user) return res.status(404).send('No user found.');
+        let passwordIsValid = bcrypt.compareSync(password, user.password);
+        if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
+        let token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 // expires in 24 hours
+        });
+        // if(user.adminLevel == 5) var is_admin = true
+        res.status(200).send({ auth: true, token: token, user: user, is_admin: (user.adminLevel == 5)  });
+    })
+
+})
 
 router.get('/:name(serie|handicap|race|club|checkpoint|boat|user)?/:id', async function (req, res) {
 
