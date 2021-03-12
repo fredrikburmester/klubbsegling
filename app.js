@@ -35,13 +35,10 @@ mongoose.connect('mongodb://192.168.0.118/klubbsegling_1',{useNewUrlParser: true
 app.use('/static', express.static('public'))
 
 //Routes
-<<<<<<< HEAD
-=======
 app.use('/',require('./routes/index'));
 app.use('/users',require('./routes/users'));
 app.use('/race',require('./routes/race'));
 app.use('/admin',require('./routes/admin'));
->>>>>>> b8a8c0a906931e7d0f264a0c047b304d6dac9513
 app.use('/api',require('./routes/api'));
  
 app.listen(3000);  

@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-<<<<<<< HEAD
 const bcrypt = require('bcrypt');
 const bodyParser = require("body-parser");
 const User = require("../models/user");
@@ -29,7 +28,9 @@ router.post('/login', (req, res) => {
         // if(user.adminLevel == 5) var is_admin = true
         res.status(200).send({ auth: true, token: token, user: user, is_admin: (user.adminLevel == 5)  });
     })
-=======
+
+})
+
 const {
     ensureAuthenticated
 } = require('../config/auth')
@@ -377,7 +378,6 @@ router.post('/find/boats', async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(result));
 
->>>>>>> b8a8c0a906931e7d0f264a0c047b304d6dac9513
 })
 
 module.exports = router;
