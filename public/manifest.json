@@ -1,42 +1,42 @@
 {
-    "short_name": "Klubbsegling",
-    "name": "Klubbsegling",
-    "icons": [
-      {
-        "src": "/static/img/logo.ico",
-        "type": "image/ico",
-        "sizes": "512x512"
-      },
-      {
-        "src": "/static/img/logo.png",
-        "type": "image/png",
-        "sizes": "256x256"
-      }
-    ],
-    "start_url": "/",
-    "background_color": "#00428c",
-    "display": "standalone",
-    "scope": "/",
-    "theme_color": "#00428c",
-    "shortcuts": [
-      {
-        "name": "Hem",
-        "short_name": "Hem",
-        "description": "Hem",
-        "url": "/"
-      },
-      {
-        "name": "Profil",
-        "short_name": "Profil",
-        "description": "Profil",
-        "url": "/profile"
-      },
-      {
-        "name": "Tävlingar",
-        "short_name": "Tävlingar",
-        "description": "Tävlingar",
-        "url": "/results"
-      }
-    ],
-    "description": "Sveriges coolaste seglingsapp!"
-  }
+	"short_name": "Klubbsegling",
+	"name": "Klubbsegling",
+	"icons": [
+		{
+			"src": "/static/img/logo.ico",
+			"type": "image/ico",
+			"sizes": "512x512"
+		},
+		{
+			"src": "/static/img/logo.png",
+			"type": "image/png",
+			"sizes": "256x256"
+		}
+	],
+	"start_url": "/",
+	"background_color": "#00428c",
+	"display": "standalone",
+	"scope": "/",
+	"theme_color": "#00428c",
+	"shortcuts": [
+		{
+			"name": "Hem",
+			"short_name": "Hem",
+			"description": "Hem",
+			"url": "/"
+		},
+		{
+			"name": "Profil",
+			"short_name": "Profil",
+			"description": "Profil",
+			"url": "/profile"
+		},
+		{
+			"name": "Tävlingar",
+			"short_name": "Tävlingar",
+			"description": "Tävlingar",
+			"url": "/results"
+		}
+	],
+	"description": "Sveriges coolaste seglingsapp!"
+}
